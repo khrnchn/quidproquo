@@ -19,8 +19,8 @@ class DatabaseSeeder extends Seeder
         \App\Models\User::factory(10)->create();
 
         \App\Models\User::factory()->create([
-            'name' => 'Khairin Chan',
-            'email' => 'kc@example.com',
+            'name' => 'Admin',
+            'email' => 'admin@admin.com',
         ]);
 
         $this->call(QuestionTypeSeeder::class);

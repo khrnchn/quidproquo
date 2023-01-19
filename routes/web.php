@@ -28,5 +28,13 @@ Route::middleware([
     })->name('dashboard');
 });
 
+Route::get('/scenarios', function () {
+    return view('user.scenario');
+})->name('scenarios');
+
+Route::get('/histories', function () {
+    return view('user.history');
+})->name('histories');
+
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
