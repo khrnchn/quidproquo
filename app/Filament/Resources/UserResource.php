@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Filament\Resources\UserResource\Widgets\UserOverview;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
@@ -22,7 +23,9 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $recordTitleAttribute = 'email';
+
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     public static function form(Form $form): Form
     {
@@ -30,28 +33,28 @@ class UserResource extends Resource
             ->schema([
                 Card::make()->schema([
                     TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                        ->required()
+                        ->maxLength(255),
 
                     TextInput::make('email')
-                    ->label('Email Address')
-                    ->required()
-                    ->maxLength(255),
+                        ->label('Email Address')
+                        ->required()
+                        ->maxLength(255),
 
                     TextInput::make('password')
-                    ->password()
-                    ->required(fn (Page $livewire): bool => $livewire instanceof CreateRecord)
-                    ->minLength(8)
-                    ->same('passwordConfirmation')
-                    ->dehydrated(fn ($state) => filled($state))
-                    ->dehydrateStateUsing(fn ($state) => Hash::make($state)),
+                        ->password()
+                        ->required(fn (Page $livewire): bool => $livewire instanceof CreateRecord)
+                        ->minLength(8)
+                        ->same('passwordConfirmation')
+                        ->dehydrated(fn ($state) => filled($state))
+                        ->dehydrateStateUsing(fn ($state) => Hash::make($state)),
 
                     TextInput::make('passwordConfirmation')
-                    ->password()
-                    ->label('Confirmation Password')
-                    ->required(fn (Page $livewire): bool => $livewire instanceof CreateRecord)
-                    ->minLength(8)
-                    ->dehydrated(false),
+                        ->password()
+                        ->label('Confirmation Password')
+                        ->required(fn (Page $livewire): bool => $livewire instanceof CreateRecord)
+                        ->minLength(8)
+                        ->dehydrated(false),
                 ])
             ]);
     }
@@ -74,14 +77,21 @@ class UserResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
+    public static function getWidgets(): array
+    {
+        return [
+            UserOverview::class,
+        ];
+    }
+
     public static function getPages(): array
     {
         return [
@@ -89,5 +99,5 @@ class UserResource extends Resource
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
-    }    
+    }
 }

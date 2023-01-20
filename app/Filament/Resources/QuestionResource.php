@@ -5,19 +5,27 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\QuestionResource\Widgets\QuestionOverview;
 use App\Filament\Resources\QuestionResource\Pages;
 use App\Filament\Resources\QuestionResource\RelationManagers;
-use App\Models\Question;
+use App\Filament\Resources\QuestionResource\RelationManagers\OptionsRelationManager;
 use Filament\Forms;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Harishdurga\LaravelQuiz\Models\Question as ModelsQuestion;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 
 class QuestionResource extends Resource
 {
-    protected static ?string $model = Question::class;
+    protected static ?string $model = ModelsQuestion::class;
+
+    protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
@@ -28,22 +36,17 @@ class QuestionResource extends Resource
                 Forms\Components\Textarea::make('name')->required(),
 
                 Forms\Components\Select::make('question_type_id')
-                ->options([
-                    '1' => 'Multiple choice, single answer',
-                    '2' => 'Multiple choice, multiple answer',
-                    '3' => 'Fill in the blank',
-                ])->required(),
+                    ->relationship('question_type', 'name'),
 
-                Forms\Components\Select::make('is_active')
-                ->options([
-                    '1' => 'Active',
-                    '0' => 'Inactive',
-                ])->required(),
+                Toggle::make('is_active')
+                    ->onIcon('heroicon-s-lightning-bolt')
+                    ->offIcon('heroicon-s-lightning-bolt')
+                    ->inline(false),
 
                 Forms\Components\FileUpload::make('media_url')
-                ->disk('public')
-                ->directory('question-images')
-                ->preserveFilenames()
+                    ->disk('public')
+                    ->directory('question-images')
+                    ->preserveFilenames()
             ]);
     }
 
@@ -51,13 +54,20 @@ class QuestionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->sortable()->searchable()->limit(60),
-                Tables\Columns\TextColumn::make('question_type_id'),
+                Tables\Columns\TextColumn::make('name')->sortable()->searchable()->limit(80)->label('Question'),
+
                 Tables\Columns\TextColumn::make('media_url'),
-                Tables\Columns\TextColumn::make('is_active'),
+
+                BooleanColumn::make('is_active')->label('Status'),
             ])
+
             ->filters([
-                //
+                Filter::make('Active')
+                    ->query(fn (Builder $query): Builder => $query->where('is_active', true)),
+
+                Filter::make('Inactive')
+                    ->query(fn (Builder $query): Builder => $query->where('is_active', false)),
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -66,11 +76,11 @@ class QuestionResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
-            //
+            OptionsRelationManager::class,
         ];
     }
 
@@ -80,7 +90,7 @@ class QuestionResource extends Resource
             QuestionOverview::class,
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -88,5 +98,5 @@ class QuestionResource extends Resource
             'create' => Pages\CreateQuestion::route('/create'),
             'edit' => Pages\EditQuestion::route('/{record}/edit'),
         ];
-    }    
+    }
 }

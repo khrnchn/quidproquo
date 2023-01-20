@@ -2,17 +2,17 @@
 
 namespace App\Filament\Resources\TopicResource\Widgets;
 
-use App\Models\Topic;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Card;
+use Harishdurga\LaravelQuiz\Models\Topic as ModelsTopic;
 
 class StatsOverview extends BaseWidget
 {
     protected function getCards(): array
     {
         return [
-            Card::make('Total topics', Topic::all()->count()),
-            Card::make('Active topics', Topic::where('is_active', 1)->count()),
+            Card::make('Total topics', ModelsTopic::all()->count()),
+            Card::make('Active topics', ModelsTopic::where('is_active', 1)->count()),
             Card::make('Average time on topic', '3:12'),
         ];
     }

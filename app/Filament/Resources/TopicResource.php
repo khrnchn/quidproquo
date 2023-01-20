@@ -5,20 +5,27 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TopicResource\Pages;
 use App\Filament\Resources\TopicResource\RelationManagers;
 use App\Filament\Resources\TopicResource\Widgets\StatsOverview;
-use App\Models\Topic;
 use Filament\Forms;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Filters\Filter;
+use Harishdurga\LaravelQuiz\Models\Topic as ModelsTopic;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TopicResource extends Resource
 {
-    protected static ?string $model = Topic::class;
+    protected static ?string $model = ModelsTopic::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $recordTitleAttribute = 'name';
+
+
+    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
 
     public static function form(Form $form): Form
     {
@@ -27,12 +34,11 @@ class TopicResource extends Resource
                 Forms\Components\TextInput::make('name')->required(),
 
                 Forms\Components\TextInput::make('slug')->required(),
-                
-                Forms\Components\Select::make('is_active')
-                ->options([
-                    '1' => 'Active',
-                    '0' => 'Inactive',
-                ])->required(),
+
+                Toggle::make('is_active')
+                    ->onIcon('heroicon-s-lightning-bolt')
+                    ->offIcon('heroicon-s-lightning-bolt')
+                    ->inline(false),
             ]);
     }
 
@@ -40,13 +46,21 @@ class TopicResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('name')->sortable()->searchable()->label('Topic'),
+
                 Tables\Columns\TextColumn::make('slug'),
-                Tables\Columns\TextColumn::make('is_active'),
+
+                BooleanColumn::make('is_active')->label('Status'),
+
+                Tables\Columns\TextColumn::make('updated_at'),
             ])
-            ->defaultSort(column:'name', direction: 'desc')
+            ->defaultSort(column: 'updated_at', direction: 'desc')
             ->filters([
-                //
+                Filter::make('Active')
+                    ->query(fn (Builder $query): Builder => $query->where('is_active', true)),
+
+                Filter::make('Inactive')
+                    ->query(fn (Builder $query): Builder => $query->where('is_active', false))
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -55,7 +69,7 @@ class TopicResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
@@ -69,7 +83,7 @@ class TopicResource extends Resource
             StatsOverview::class,
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -77,5 +91,5 @@ class TopicResource extends Resource
             'create' => Pages\CreateTopic::route('/create'),
             'edit' => Pages\EditTopic::route('/{record}/edit'),
         ];
-    }    
+    }
 }
