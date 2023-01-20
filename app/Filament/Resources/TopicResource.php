@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TopicResource\Pages;
 use App\Filament\Resources\TopicResource\RelationManagers;
+use App\Filament\Resources\TopicResource\RelationManagers\QuestionsRelationManager;
 use App\Filament\Resources\TopicResource\Widgets\StatsOverview;
 use Filament\Forms;
 use Filament\Forms\Components\Toggle;
@@ -73,7 +74,7 @@ class TopicResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            QuestionsRelationManager::class,
         ];
     }
 
