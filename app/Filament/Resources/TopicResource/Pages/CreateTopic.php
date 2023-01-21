@@ -9,5 +9,4 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateTopic extends CreateRecord
 {
     protected static string $resource = TopicResource::class;
-
 }

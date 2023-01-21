@@ -3,10 +3,12 @@
 namespace App\Filament\Resources\QuestionResource\RelationManagers;
 
 use Filament\Forms;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Columns\BooleanColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -22,7 +24,14 @@ class OptionsRelationManager extends RelationManager
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->label('Question'),
+
+                    Toggle::make('is_correct')
+                    ->onIcon('heroicon-s-check')
+                    ->offIcon('heroicon-s-check')
+                    ->inline(false),
+
             ]);
     }
 
@@ -31,6 +40,7 @@ class OptionsRelationManager extends RelationManager
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
+                BooleanColumn::make('is_correct')->label('Correct'),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
@@ -45,5 +55,5 @@ class OptionsRelationManager extends RelationManager
                 Tables\Actions\DetachBulkAction::make(),
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
-    }    
+    }
 }

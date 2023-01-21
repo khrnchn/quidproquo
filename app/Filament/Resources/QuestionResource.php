@@ -35,13 +35,13 @@ class QuestionResource extends Resource
             ->schema([
                 Forms\Components\Textarea::make('name')->required(),
 
-                Forms\Components\Select::make('question_type_id')
-                    ->relationship('question_type', 'name'),
-
                 Toggle::make('is_active')
                     ->onIcon('heroicon-s-lightning-bolt')
                     ->offIcon('heroicon-s-lightning-bolt')
                     ->inline(false),
+                    
+                Forms\Components\Select::make('question_type_id')
+                    ->relationship('question_type', 'name'),
 
                 Forms\Components\FileUpload::make('media_url')
                     ->disk('public')
