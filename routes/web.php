@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\User\QuizController;
+use App\Http\Controllers\User\TopicController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,13 +30,8 @@ Route::middleware([
     })->name('dashboard');
 });
 
-Route::get('/scenarios', function () {
-    return view('user.scenario');
-})->name('scenarios');
-
-Route::get('/histories', function () {
-    return view('user.history');
-})->name('histories');
+Route::get('/topics', [TopicController::class, 'index'])->name('topics');
+Route::get('/quizzes', [QuizController::class, 'index'])->name('quizzes');
 
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);

@@ -25,7 +25,7 @@ class OptionsRelationManager extends RelationManager
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255)
-                    ->label('Question'),
+                    ->label('Option'),
 
                 Forms\Components\TextArea::make('explanation')
                     ->required()

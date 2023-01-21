@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ed303305318bf7e05d90e7cb55bbea7a",
+    "content-hash": "f256903f397c48a405088d3f8b1b315c",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -333,6 +333,86 @@
                 }
             ],
             "time": "2022-08-10T22:54:19+00:00"
+        },
+        {
+            "name": "camya/filament-title-with-slug",
+            "version": "v0.5.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/camya/filament-title-with-slug.git",
+                "reference": "7e94519fbd7a28531e5f99fc440996fedc061443"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/camya/filament-title-with-slug/zipball/7e94519fbd7a28531e5f99fc440996fedc061443",
+                "reference": "7e94519fbd7a28531e5f99fc440996fedc061443",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^2.16",
+                "illuminate/contracts": "^9.0",
+                "php": "^8.0.2",
+                "spatie/laravel-package-tools": "^1.13.0"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^6.0",
+                "nunomaduro/larastan": "^2.0.1",
+                "orchestra/testbench": "^7.0",
+                "pestphp/pest": "^1.21",
+                "pestphp/pest-plugin-laravel": "^1.1",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan-deprecation-rules": "^1.0",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "phpunit/phpunit": "^9.5",
+                "roave/security-advisories": "dev-latest",
+                "spatie/laravel-ray": "^1.31"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Camya\\Filament\\FilamentTitleWithSlugServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "Camya\\Filament\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andreas Scheibel",
+                    "email": "contact@camya.com",
+                    "homepage": "https://www.camya.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "TitleWithSlugInput - Easy Permalink Slugs for the FilamentPHP Form Builder (PHP / Laravel / Livewire)",
+            "homepage": "https://github.com/camya/filament-title-with-slug",
+            "keywords": [
+                "alpinejs",
+                "filament",
+                "framework",
+                "laravel",
+                "livewire",
+                "permalink",
+                "slug",
+                "tailwindcss"
+            ],
+            "support": {
+                "issues": "https://github.com/camya/filament-title-with-slug/issues",
+                "source": "https://github.com/camya/filament-title-with-slug/tree/v0.5.4"
+            },
+            "time": "2022-12-11T19:40:21+00:00"
         },
         {
             "name": "danharrin/date-format-converter",
@@ -2003,6 +2083,81 @@
                 "source": "https://github.com/harishdurga/laravel-quiz/tree/v1.1.11"
             },
             "time": "2022-09-17T10:35:31+00:00"
+        },
+        {
+            "name": "icetalker/filament-stepper",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/icetalker/filament-stepper.git",
+                "reference": "47a5f440d5ad392874b358811e61a99181fc036d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/icetalker/filament-stepper/zipball/47a5f440d5ad392874b358811e61a99181fc036d",
+                "reference": "47a5f440d5ad392874b358811e61a99181fc036d",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^2.0",
+                "illuminate/contracts": "^8.6|^9.0",
+                "php": "^8.0",
+                "spatie/laravel-package-tools": "^1.9.2"
+            },
+            "require-dev": {
+                "nunomaduro/collision": "^6.0",
+                "orchestra/testbench": "^7.0",
+                "pestphp/pest": "^1.21",
+                "pestphp/pest-plugin-laravel": "^1.1",
+                "phpunit/phpunit": "^9.5",
+                "spatie/laravel-ray": "^1.26"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Icetalker\\FilamentStepper\\FilamentStepperServiceProvider"
+                    ],
+                    "aliases": {
+                        "FilamentStepper": "Icetalker\\FilamentStepper\\Facades\\FilamentStepper"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Icetalker\\FilamentStepper\\": "src",
+                    "Icetalker\\FilamentStepper\\Database\\Factories\\": "database/factories"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Martin Hwang",
+                    "email": "martin.hwang@outlook.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Filament Form Component for Number Input Field ",
+            "homepage": "https://github.com/icetalker/filament-stepper",
+            "keywords": [
+                "filament-stepper",
+                "icetalker",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/icetalker/filament-stepper/issues",
+                "source": "https://github.com/icetalker/filament-stepper/tree/v1.0.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/icetalker",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-08-25T19:39:24+00:00"
         },
         {
             "name": "jaybizzle/crawler-detect",

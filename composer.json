@@ -6,9 +6,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "camya/filament-title-with-slug": "^0.5.4",
         "filament/filament": "^2.16",
         "guzzlehttp/guzzle": "^7.2",
         "harishdurga/laravel-quiz": "^1.1",
+        "icetalker/filament-stepper": "^1.0",
         "laravel/framework": "^9.19",
         "laravel/jetstream": "^2.12",
         "laravel/sanctum": "^3.0",
