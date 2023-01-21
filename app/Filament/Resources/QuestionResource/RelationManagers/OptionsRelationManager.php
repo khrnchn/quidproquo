@@ -27,11 +27,15 @@ class OptionsRelationManager extends RelationManager
                     ->maxLength(255)
                     ->label('Question'),
 
-                    Toggle::make('is_correct')
+                Forms\Components\TextArea::make('explanation')
+                    ->required()
+                    ->maxLength(255)
+                    ->label('Explanation'),
+
+                Toggle::make('is_correct')
                     ->onIcon('heroicon-s-check')
                     ->offIcon('heroicon-s-check')
                     ->inline(false),
-
             ]);
     }
 
@@ -39,8 +43,9 @@ class OptionsRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name')->limit(50)->label('Options'),
                 BooleanColumn::make('is_correct')->label('Correct'),
+                Tables\Columns\TextColumn::make('explanation')->limit(40),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
