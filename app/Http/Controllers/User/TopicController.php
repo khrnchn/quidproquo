@@ -24,7 +24,7 @@ class TopicController extends Controller
 
         $quizAverage = 80;
 
-        return view('user.topics', compact('topics', 'quizAverage', 'questions', 'total'));
+        return view('user.dashboard', compact('topics', 'quizAverage', 'questions', 'total'));
     }
 
     /**

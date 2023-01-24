@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\QuizResource\Pages;
 use App\Filament\Resources\QuizResource\RelationManagers;
+use App\Filament\Resources\QuizResource\RelationManagers\TopicsRelationManager;
+use App\Filament\Resources\QuizResource\Widgets\QuizOverview;
 use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Grid;
@@ -23,55 +25,70 @@ class QuizResource extends Resource
 {
     protected static ?string $model = Quiz::class;
 
+    protected static ?string $recordTitleAttribute = 'name';
+
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
+
+    protected static ?int $navigationSort = 4;
+
+    protected static ?string $navigationGroup = 'Manage';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')->required(),
 
-                Forms\Components\TextInput::make('slug')->required(),
 
-                Grid::make(2)
+                Grid::make(3)
                     ->schema([
+                        Forms\Components\TextInput::make('name')->required(),
+                        Forms\Components\TextInput::make('slug')->required(),
                         Forms\Components\Textarea::make('description')->required(),
                     ]),
 
-                Stepper::make('total_marks')
-                    ->minValue(1)
-                    ->maxValue(100)
-                    ->default(100)
-                    ->step(1),
+                Grid::make(3)
+                    ->schema([
+                        Stepper::make('total_marks')
+                            ->minValue(1)
+                            ->maxValue(100)
+                            ->default(100)
+                            ->step(1),
 
-                Stepper::make('pass_marks')
-                    ->minValue(1)
-                    ->maxValue(100)
-                    ->default(100)
-                    ->step(1),
+                        Stepper::make('pass_marks')
+                            ->minValue(1)
+                            ->maxValue(100)
+                            ->default(100)
+                            ->step(1),
 
-                Stepper::make('max_attempts')
-                    ->minValue(1)
-                    ->maxValue(3)
-                    ->default(1)
-                    ->step(1),
+                        Stepper::make('max_attempts')
+                            ->minValue(1)
+                            ->maxValue(3)
+                            ->default(1)
+                            ->step(1),
+                    ]),
 
-                Toggle::make('is_published')
-                    ->onIcon('heroicon-s-lightning-bolt')
-                    ->offIcon('heroicon-s-lightning-bolt')
-                    ->inline(false),
+                Grid::make(3)
+                    ->schema([
+                        Forms\Components\TextInput::make('duration')->required()->default(1800)->name('Duration in seconds'),
 
-                Forms\Components\FileUpload::make('media_url')
-                    ->disk('public')
-                    ->directory('question-images')
-                    ->preserveFilenames()
-                    ->name('Media'),
+                        DateTimePicker::make('valid_from')->required(),
 
-                Forms\Components\TextInput::make('duration')->required()->default(1800)->name('Duration in seconds'),
+                        DateTimePicker::make('valid_upto')->required(),
+                    ]),
 
-                DateTimePicker::make('valid_from')->required(),
+                Grid::make(3)
+                    ->schema([
+                        Forms\Components\FileUpload::make('media_url')
+                            ->disk('public')
+                            ->directory('question-images')
+                            ->preserveFilenames()
+                            ->name('Media'),
 
-                DateTimePicker::make('valid_upto')->required(),
+                        Toggle::make('is_published')
+                            ->onIcon('heroicon-s-lightning-bolt')
+                            ->offIcon('heroicon-s-lightning-bolt')
+                            ->inline(false),
+                    ]),
 
 
             ]);
@@ -102,7 +119,14 @@ class QuizResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            TopicsRelationManager::class,
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            QuizOverview::class,
         ];
     }
 

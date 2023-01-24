@@ -25,12 +25,10 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified'
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [TopicController::class, 'index'])->name('dashboard');
 });
 
-Route::get('/topics', [TopicController::class, 'index'])->name('topics');
+
 Route::get('/quizzes', [QuizController::class, 'index'])->name('quizzes');
 
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);

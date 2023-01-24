@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Harishdurga\LaravelQuiz\Models\Quiz;
+use Harishdurga\LaravelQuiz\Models\Topic;
 use Illuminate\Http\Request;
 
 class QuizController extends Controller
@@ -13,9 +14,18 @@ class QuizController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    
+
     public function index()
     {
-        return view('user.quizzes');
+        $setupQuiz = true;
+        $quizzes = Topic::withcount('questions')
+        ->where('is_active', 1)
+        ->orderBy('name')
+        ->get();
+
+        return view('user.quizzes', compact('setupQuiz', 'quizzes'));
     }
 
     /**

@@ -135,6 +135,7 @@
                                                 </form>
                                             </td>
                                         </tr>
+                                        
                                     </tbody>
                                 </table>
                             </div>
@@ -142,13 +143,6 @@
                     </div>
                 </div>
                 <!-- end table -->
-
-                <section class="text-gray-600 body-font">
-                    <div class="p-4 w-full">
-                        <div class="container px-5 py-5 mx-auto" id="chart">
-                        </div>
-                    </div>
-                </section>
             </div>
         </div>
     </div>
