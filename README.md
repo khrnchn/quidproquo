@@ -3,7 +3,7 @@
  <img width=200px height=200px src="https://i.imgur.com/6wj0hh6.jpg" alt="Project logo"></a>
 </p>
 
-<h3 align="center">undefined</h3>
+<h3 align="center">Quid Pro Quo</h3>
 
 <div align="center">
 
@@ -28,7 +28,7 @@
 - [Usage](#usage)
 - [Built Using](#built_using)
 - [TODO](../TODO.md)
-- [Contributing](../CONTRIBUTING.md)
+- [Authors](#authors)
 - [Acknowledgments](#acknowledgement)
 
 ## 🧐 About <a name = "about"></a>
@@ -39,65 +39,58 @@ To test and evaluate the effectiveness of the simulation system in increasing us
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
 
-### Prerequisites
+### Installation
 
-What things you need to install the software and how to install them.
-
+Clone the repo:
 ```
-Give examples
-```
-
-### Installing
-
-A step by step series of examples that tell you how to get a development env running.
-
-Say what the step will be
-
-```
-Give the example
+$ git clone https://github.com/khrnchn/quidproquo.git
 ```
 
-And repeat
-
+Install PHP dependencies:
 ```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo.
-
-## 🔧 Running the tests <a name = "tests"></a>
-
-Explain how to run the automated tests for this system.
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
+Composer install
 ```
 
-### And coding style tests
-
-Explain what these tests test and why
-
+Setup .env file:
 ```
-Give an example
+cp .env.example .env
+```
+
+Generate application key:
+```
+php artisan key:generate
+```
+
+Run database migrations:
+```
+php artisan migrate
+```
+
+Run database seeder:
+```
+php artisan mdb:seed
+```
+
+Create a symlink to the storage:
+```
+php artisan storage:link
+```
+
+Run the development server:
+```
+php artisan serve
 ```
 
 ## 🎈 Usage <a name="usage"></a>
 
-Add notes about how to use the system.
-
-## 🚀 Deployment <a name = "deployment"></a>
-
-Add additional notes about how to deploy this on a live system.
+Create topics, questions, and quizzes using the admin account. 
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 
-- [Laravel](https://laravel.com/) - Web Application Framework
+- [Laravel](https://laravel.com/) - Web application framework
 - [FilamentPHP](https://filamentphp.com/) - A collection of tools for rapidly building beautiful TALL stack apps
-- [XAMPP](https://www.apachefriends.org/) - Web Server/ Database
+- [XAMPP](https://www.apachefriends.org/) - Web server/ database
+- [Laravel Quiz](https://github.com/harishdurga/laravel-quiz) - Quiz functionalities, model relationships
 
 ## ✍️ Authors <a name = "authors"></a>
 
@@ -106,6 +99,6 @@ Add additional notes about how to deploy this on a live system.
 
 ## 🎉 Acknowledgements <a name = "acknowledgement"></a>
 
-- Hat tip to anyone whose code was used
-- Inspiration
-- References
+- Thanks to Mr. Harish Durga for his laravel-quiz package. 
+- Shoutout to filamentPHP for the awesome admin panel TALLkit.
+- Thanks to Dr. Firdaus for his project ideas.
