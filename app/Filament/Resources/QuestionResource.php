@@ -7,6 +7,8 @@ use App\Filament\Resources\QuestionResource\Pages;
 use App\Filament\Resources\QuestionResource\RelationManagers;
 use App\Filament\Resources\QuestionResource\RelationManagers\OptionsRelationManager;
 use Filament\Forms;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -37,20 +39,23 @@ class QuestionResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Textarea::make('name')->required(),
+                Section::make('General')
+                    ->schema([
+                        Forms\Components\Textarea::make('name')->required()->label('Question'),
 
-                Toggle::make('is_active')
-                    ->onIcon('heroicon-s-lightning-bolt')
-                    ->offIcon('heroicon-s-lightning-bolt')
-                    ->inline(false),
-                    
-                Forms\Components\Select::make('question_type_id')
-                    ->relationship('question_type', 'name'),
+                        Toggle::make('is_active')
+                            ->onIcon('heroicon-s-lightning-bolt')
+                            ->offIcon('heroicon-s-lightning-bolt')
+                            ->inline(false),
 
-                Forms\Components\FileUpload::make('media_url')
-                    ->disk('public')
-                    ->directory('question-images')
-                    ->preserveFilenames()
+                        Forms\Components\Select::make('question_type_id')
+                            ->relationship('question_type', 'name'),
+
+                        Forms\Components\FileUpload::make('media_url')
+                            ->disk('public')
+                            ->directory('question-images')
+                            ->preserveFilenames()
+                    ])->columns(2),
             ]);
     }
 
