@@ -7,6 +7,7 @@ use App\Filament\Resources\TopicResource\RelationManagers;
 use App\Filament\Resources\TopicResource\RelationManagers\QuestionsRelationManager;
 use App\Filament\Resources\TopicResource\Widgets\StatsOverview;
 use Filament\Forms;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -36,14 +37,19 @@ class TopicResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')->required(),
 
-                Forms\Components\TextInput::make('slug')->required(),
+                Grid::make(3)
+                    ->schema([
 
-                Toggle::make('is_active')
-                    ->onIcon('heroicon-s-lightning-bolt')
-                    ->offIcon('heroicon-s-lightning-bolt')
-                    ->inline(false),
+                        Forms\Components\TextInput::make('name')->required(),
+
+                        Forms\Components\TextInput::make('slug')->required(),
+
+                        Toggle::make('is_active')
+                            ->onIcon('heroicon-s-lightning-bolt')
+                            ->offIcon('heroicon-s-lightning-bolt')
+                            ->inline(false),
+                    ]),
             ]);
     }
 
@@ -93,7 +99,6 @@ class TopicResource extends Resource
     {
         return [
             'index' => Pages\ListTopics::route('/'),
-            'create' => Pages\CreateTopic::route('/create'),
             'edit' => Pages\EditTopic::route('/{record}/edit'),
         ];
     }

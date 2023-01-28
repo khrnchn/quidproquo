@@ -9,6 +9,7 @@ use App\Filament\Resources\QuizResource\Widgets\QuizOverview;
 use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Form;
@@ -38,60 +39,66 @@ class QuizResource extends Resource
         return $form
             ->schema([
 
-
-                Grid::make(3)
+                Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\TextInput::make('name')->required(),
-                        Forms\Components\TextInput::make('slug')->required(),
-                        Forms\Components\Textarea::make('description')->required(),
-                    ]),
+                        Section::make('General')
+                            ->schema([
+                                Forms\Components\TextInput::make('name')->required(),
+                                Forms\Components\TextInput::make('slug')->required(),
+                                Forms\Components\Textarea::make('description')->required(),
+                                Toggle::make('is_published')
+                                    ->onIcon('heroicon-s-lightning-bolt')
+                                    ->offIcon('heroicon-s-lightning-bolt')
+                                    ->default(true)
+                                    ->inline(false),
+                            ])->columns(2),
 
-                Grid::make(3)
+                        Section::make('Image')
+                            ->schema([
+                                Forms\Components\FileUpload::make('media_url')
+                                    ->disk('public')
+                                    ->directory('question-images')
+                                    ->preserveFilenames()
+                                    ->name('Media')
+                            ]),
+                    ])->columnSpan(2),
+
+                Forms\Components\Group::make()
                     ->schema([
-                        Stepper::make('total_marks')
-                            ->minValue(1)
-                            ->maxValue(100)
-                            ->default(100)
-                            ->step(1),
+                        Section::make('Time Management')
+                            ->schema([
+                                Forms\Components\TextInput::make('duration')->required()->default(1800)->name('Duration in seconds'),
 
-                        Stepper::make('pass_marks')
-                            ->minValue(1)
-                            ->maxValue(100)
-                            ->default(100)
-                            ->step(1),
+                                DateTimePicker::make('valid_from')
+                                    ->default(now())
+                                    ->required(),
 
-                        Stepper::make('max_attempts')
-                            ->minValue(1)
-                            ->maxValue(3)
-                            ->default(1)
-                            ->step(1),
-                    ]),
+                                DateTimePicker::make('valid_upto')
+                                    ->required(),
+                            ]),
 
-                Grid::make(3)
-                    ->schema([
-                        Forms\Components\TextInput::make('duration')->required()->default(1800)->name('Duration in seconds'),
+                        Section::make('Marking')
+                            ->schema([
+                                Stepper::make('total_marks')
+                                    ->minValue(1)
+                                    ->maxValue(100)
+                                    ->default(100)
+                                    ->step(1),
 
-                        DateTimePicker::make('valid_from')->required(),
+                                Stepper::make('pass_marks')
+                                    ->minValue(1)
+                                    ->maxValue(100)
+                                    ->default(80)
+                                    ->step(1),
 
-                        DateTimePicker::make('valid_upto')->required(),
-                    ]),
-
-                Grid::make(3)
-                    ->schema([
-                        Forms\Components\FileUpload::make('media_url')
-                            ->disk('public')
-                            ->directory('question-images')
-                            ->preserveFilenames()
-                            ->name('Media'),
-
-                        Toggle::make('is_published')
-                            ->onIcon('heroicon-s-lightning-bolt')
-                            ->offIcon('heroicon-s-lightning-bolt')
-                            ->inline(false),
-                    ]),
-
-
-            ]);
+                                Stepper::make('max_attempts')
+                                    ->minValue(1)
+                                    ->maxValue(3)
+                                    ->default(1)
+                                    ->step(1),
+                            ]),
+                    ])->columnSpan(1),
+            ])->columns(3);
     }
 
     public static function table(Table $table): Table
