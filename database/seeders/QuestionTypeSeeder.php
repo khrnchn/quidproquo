@@ -25,6 +25,7 @@ class QuestionTypeSeeder extends Seeder
                 'name' => 'fill_the_blank',
             ]
         ];
+        
         foreach ($questionTypes as $questionType) {
             QuestionType::create($questionType);
         }
