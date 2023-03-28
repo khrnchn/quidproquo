@@ -29,16 +29,11 @@ class FilamentServiceProvider extends ServiceProvider
             // Using Vite
             Filament::registerViteTheme('resources/css/filament.css');
             
-            // Filament::registerNavigationGroups([
-            //     NavigationGroup::make()
-            //         ->label('Manage')
-            //         ->icon('heroicon-s-pencil'),
-
-            //     NavigationGroup::make()
-            //         ->label('Settings')
-            //         ->icon('heroicon-s-cog')
-            //         ->collapsed(),
-            // ]);
+            Filament::registerNavigationGroups([
+                'Manage',
+                'Settings',
+                'Filament Shield'
+            ]);
         });
     }
 }

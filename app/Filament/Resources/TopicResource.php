@@ -7,6 +7,7 @@ use App\Filament\Resources\TopicResource\RelationManagers;
 use App\Filament\Resources\TopicResource\RelationManagers\QuestionsRelationManager;
 use App\Filament\Resources\TopicResource\Widgets\StatsOverview;
 use Filament\Forms;
+use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Form;
@@ -37,19 +38,21 @@ class TopicResource extends Resource
     {
         return $form
             ->schema([
+                Card::make([
+                    Grid::make(3)
+                        ->schema([
 
-                Grid::make(3)
-                    ->schema([
+                            Forms\Components\TextInput::make('name')->required(),
 
-                        Forms\Components\TextInput::make('name')->required(),
+                            Forms\Components\TextInput::make('slug')->required(),
 
-                        Forms\Components\TextInput::make('slug')->required(),
+                            Toggle::make('is_active')
+                                ->onIcon('heroicon-s-lightning-bolt')
+                                ->offIcon('heroicon-s-lightning-bolt')
+                                ->inline(false),
+                        ]),
+                ]),
 
-                        Toggle::make('is_active')
-                            ->onIcon('heroicon-s-lightning-bolt')
-                            ->offIcon('heroicon-s-lightning-bolt')
-                            ->inline(false),
-                    ]),
             ]);
     }
 
@@ -63,7 +66,6 @@ class TopicResource extends Resource
 
                 BooleanColumn::make('is_active')->label('Status'),
 
-                Tables\Columns\TextColumn::make('updated_at'),
             ])
             ->defaultSort(column: 'updated_at', direction: 'desc')
             ->filters([
