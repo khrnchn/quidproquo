@@ -24,10 +24,9 @@
 
 - [About](#about)
 - [Getting Started](#getting_started)
-- [Deployment](#deployment)
+- [Installation](#installation)
 - [Usage](#usage)
 - [Built Using](#built_using)
-- [TODO](../TODO.md)
 - [Authors](#authors)
 - [Acknowledgments](#acknowledgement)
 
@@ -37,7 +36,7 @@ To test and evaluate the effectiveness of the simulation system in increasing us
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Installation
 
@@ -68,7 +67,7 @@ php artisan migrate
 
 Run database seeder:
 ```
-php artisan mdb:seed
+php artisan db:seed
 ```
 
 Create a symlink to the storage:
@@ -83,7 +82,7 @@ php artisan serve
 
 ## 🎈 Usage <a name="usage"></a>
 
-Create topics, questions, and quizzes using the admin account. 
+Create topics, questions, and quizzes using the admin account. Answer the quizzes using the user account.
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 
