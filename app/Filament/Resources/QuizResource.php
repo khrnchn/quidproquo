@@ -53,13 +53,13 @@ class QuizResource extends Resource
                                     ->inline(false),
                             ])->columns(2),
 
-                        Section::make('Image')
+                        Section::make('Media')
                             ->schema([
-                                Forms\Components\FileUpload::make('media_url')
+                                Forms\Components\FileUpload::make('image_path')
                                     ->disk('public')
                                     ->directory('question-images')
                                     ->preserveFilenames()
-                                    ->name('Media')
+                                    ->name('Image')
                             ]),
                     ])->columnSpan(2),
 

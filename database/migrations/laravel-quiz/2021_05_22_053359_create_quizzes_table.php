@@ -43,7 +43,7 @@ class CreateQuizzesTable extends Migration
             $table->id();
             $table->text('question');
             $table->foreignId('question_type_id')->nullable()->constrained($this->tableNames['question_types'])->cascadeOnDelete();
-            $table->text('media_url')->nullable();
+            $table->text('image_path')->nullable();
             $table->string('media_type')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();

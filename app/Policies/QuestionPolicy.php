@@ -18,7 +18,7 @@ class QuestionPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->can('view_any_question');
+        return $user->hasPermissionTo('view_any_question');
     }
 
     /**
@@ -30,7 +30,7 @@ class QuestionPolicy
      */
     public function view(User $user, Question $question)
     {
-        return $user->can('view_question');
+        return $user->hasPermissionTo('view_question');
     }
 
     /**
@@ -41,7 +41,7 @@ class QuestionPolicy
      */
     public function create(User $user)
     {
-        return $user->can('create_question');
+        return $user->hasPermissionTo('create_question');
     }
 
     /**
@@ -53,7 +53,7 @@ class QuestionPolicy
      */
     public function update(User $user, Question $question)
     {
-        return $user->can('update_question');
+        return $user->hasPermissionTo('update_question');
     }
 
     /**
@@ -65,7 +65,7 @@ class QuestionPolicy
      */
     public function delete(User $user, Question $question)
     {
-        return $user->can('delete_question');
+        return $user->hasPermissionTo('delete_question');
     }
 
     /**
@@ -76,7 +76,7 @@ class QuestionPolicy
      */
     public function deleteAny(User $user)
     {
-        return $user->can('delete_any_question');
+        return $user->hasPermissionTo('delete_any_question');
     }
 
     /**
@@ -88,7 +88,7 @@ class QuestionPolicy
      */
     public function forceDelete(User $user, Question $question)
     {
-        return $user->can('force_delete_question');
+        return $user->hasPermissionTo('force_delete_question');
     }
 
     /**
@@ -99,7 +99,7 @@ class QuestionPolicy
      */
     public function forceDeleteAny(User $user)
     {
-        return $user->can('force_delete_any_question');
+        return $user->hasPermissionTo('force_delete_any_question');
     }
 
     /**
@@ -111,7 +111,7 @@ class QuestionPolicy
      */
     public function restore(User $user, Question $question)
     {
-        return $user->can('restore_question');
+        return $user->hasPermissionTo('restore_question');
     }
 
     /**
@@ -122,7 +122,7 @@ class QuestionPolicy
      */
     public function restoreAny(User $user)
     {
-        return $user->can('restore_any_question');
+        return $user->hasPermissionTo('restore_any_question');
     }
 
     /**
@@ -134,7 +134,7 @@ class QuestionPolicy
      */
     public function replicate(User $user, Question $question)
     {
-        return $user->can('replicate_question');
+        return $user->hasPermissionTo('replicate_question');
     }
 
     /**
@@ -145,7 +145,7 @@ class QuestionPolicy
      */
     public function reorder(User $user)
     {
-        return $user->can('reorder_question');
+        return $user->hasPermissionTo('reorder_question');
     }
 
 }

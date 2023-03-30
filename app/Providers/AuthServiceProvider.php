@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-// use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -14,6 +14,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+
     ];
 
     /**
@@ -23,6 +24,11 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Automatically finding the policies
+        Gate::guessPolicyNamesUsing(function ($modelClass) {
+            return 'App\\Policies\\' . class_basename($modelClass) . 'Policy';
+        });
+        
         $this->registerPolicies();
 
         //

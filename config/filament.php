@@ -25,7 +25,7 @@ return [
     |
     */
 
-    'path' => env('FILAMENT_PATH', 'admin'),
+    'path' => env('FILAMENT_PATH', 'qpq'),
 
     /*
     |--------------------------------------------------------------------------
@@ -141,6 +141,7 @@ return [
         'register' => [
             Widgets\AccountWidget::class,
             Widgets\FilamentInfoWidget::class,
+            \Awcodes\Overlook\Overlook::class,
         ],
     ],
 
