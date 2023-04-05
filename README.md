@@ -11,7 +11,11 @@
 
 ---
 
-<p align="center"> This is a final year project for my Bachelor's Degree - simulation website to educate quid pro quo cyberattacks, developed using the Filament's admin panel framework.
+<p align="center"> This is a final year project for my Bachelor's Degree - simulation website to educate cyberattacks, developed using the Filament's admin panel framework.
+    <br> 
+</p>
+
+<p align="center"> Note: User quiz features is still under development.
     <br> 
 </p>
 
@@ -27,7 +31,7 @@
 
 ## 🧐 About <a name = "about"></a>
 
-To test and evaluate the effectiveness of the simulation system in increasing users’ awareness and understanding of quid pro quo attacks and their ability to recognize and defend against them.
+To test and evaluate the effectiveness of the simulation system in increasing users’ awareness and understanding of cyberattacks and their ability to recognize and defend against them.
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
