@@ -46,7 +46,7 @@ $ git clone https://github.com/khrnchn/quidproquo.git
 
 Install PHP dependencies:
 ```
-Composer install
+composer install
 ```
 
 Setup .env file:
