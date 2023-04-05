@@ -1,8 +1,3 @@
-<p align="center">
-  <a href="" rel="noopener">
- <img width=200px height=200px src="https://i.imgur.com/6wj0hh6.jpg" alt="Project logo"></a>
-</p>
-
 <h3 align="center">Quid Pro Quo</h3>
 
 <div align="center">
@@ -16,7 +11,7 @@
 
 ---
 
-<p align="center"> This is a final year project for my Bachelor's Degree - simulation website to educate quid pro quo cyberattacks.
+<p align="center"> This is a final year project for my Bachelor's Degree - simulation website to educate quid pro quo cyberattacks, developed using the Filament's admin panel framework.
     <br> 
 </p>
 
