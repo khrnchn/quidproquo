@@ -11,7 +11,7 @@
 
 ---
 
-<p align="center"> This is a final year project for my Bachelor's Degree - simulation website to educate cyberattacks, developed using the Filament's admin panel framework.
+<p align="center"> Social Engineering Quiz System using Filament.
     <br> 
 </p>
 
