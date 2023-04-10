@@ -1,5 +1,6 @@
 <?php
 
+use App\Filament\Resources\QuizResource\Pages\AnswerQuiz;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\User\QuizController;
@@ -17,19 +18,8 @@ use App\Http\Controllers\User\TopicController;
 */
 
 Route::get('/', function () {
-    return redirect()->route('login'); //redirect user to login page 
+    return redirect('qpq/login');
 });
-
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified'
-])->group(function () {
-    Route::get('/dashboard', [TopicController::class, 'index'])->name('dashboard');
-});
-
-
-Route::get('/quizzes', [QuizController::class, 'index'])->name('quizzes');
 
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);

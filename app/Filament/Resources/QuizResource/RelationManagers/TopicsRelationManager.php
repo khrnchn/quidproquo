@@ -7,8 +7,14 @@ use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Harishdurga\LaravelQuiz\Models\Question;
+use Harishdurga\LaravelQuiz\Models\Quiz;
+use Harishdurga\LaravelQuiz\Models\QuizQuestion;
+use Harishdurga\LaravelQuiz\Models\Topic;
+use Harishdurga\LaravelQuiz\Models\Topicable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\DB;
 
 class TopicsRelationManager extends RelationManager
 {
@@ -37,7 +43,7 @@ class TopicsRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
-                Tables\Actions\AttachAction::make(),
+                Tables\Actions\AttachAction::make(), // everything in topicable must be inserted into QuizQuestion model
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -48,5 +54,5 @@ class TopicsRelationManager extends RelationManager
                 Tables\Actions\DetachBulkAction::make(),
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
-    }    
+    }
 }

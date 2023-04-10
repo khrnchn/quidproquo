@@ -64,8 +64,6 @@ class QuestionResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable()->limit(80)->label('Question'),
 
-                Tables\Columns\TextColumn::make('media_url'),
-
                 BooleanColumn::make('is_active')->label('Status'),
             ])
 

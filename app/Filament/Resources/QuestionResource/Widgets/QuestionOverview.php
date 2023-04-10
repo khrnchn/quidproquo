@@ -15,7 +15,7 @@ class QuestionOverview extends BaseWidget
 
             Card::make('Active questions', ModelsQuestion::where('is_active', 1)->count()),
             
-            Card::make('Average time on question', '3:12'),
+            Card::make('Last created on', ModelsQuestion::pluck('created_at')->last()),
         ];
     }
 }

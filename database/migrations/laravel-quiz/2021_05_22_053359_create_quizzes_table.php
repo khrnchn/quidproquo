@@ -64,7 +64,7 @@ class CreateQuizzesTable extends Migration
             $table->id();
             $table->foreignId('question_id')->nullable()->constrained($this->tableNames['questions'])->cascadeOnDelete();
             $table->string('option')->nullable();
-            $table->string('media_url')->nullable();
+            $table->string('image_path')->nullable();
             $table->string('media_type')->nullable();
             $table->boolean('is_correct')->default(false);
             $table->timestamps();
@@ -109,7 +109,6 @@ class CreateQuizzesTable extends Migration
             $table->id();
             $table->foreignId('quiz_id')->nullable()->constrained($this->tableNames['quizzes'])->cascadeOnDelete();
             $table->unsignedInteger('participant_id');
-            $table->string('participant_type');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -3,24 +3,35 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\QuizResource\Pages;
+use App\Filament\Resources\QuizResource\Pages\AnswerQuiz;
 use App\Filament\Resources\QuizResource\RelationManagers;
 use App\Filament\Resources\QuizResource\RelationManagers\TopicsRelationManager;
 use App\Filament\Resources\QuizResource\Widgets\QuizOverview;
+use App\Models\User;
 use Filament\Forms;
+use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Http\Livewire\Notifications;
+use Filament\Notifications\Notification;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\BooleanColumn;
 use Harishdurga\LaravelQuiz\Models\Quiz;
+use Harishdurga\LaravelQuiz\Models\QuizAttempt;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Icetalker\FilamentStepper\Forms\Components\Stepper;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use RalphJSmit\Filament\Components\Forms\Timestamps;
+use RalphJSmit\Filament\Components\Forms\Sidebar;
 
 class QuizResource extends Resource
 {
@@ -37,7 +48,7 @@ class QuizResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
+            ->schema([   
 
                 Forms\Components\Group::make()
                     ->schema([
@@ -46,21 +57,12 @@ class QuizResource extends Resource
                                 Forms\Components\TextInput::make('name')->required(),
                                 Forms\Components\TextInput::make('slug')->required(),
                                 Forms\Components\Textarea::make('description')->required(),
-                                Toggle::make('is_published')
-                                    ->onIcon('heroicon-s-lightning-bolt')
-                                    ->offIcon('heroicon-s-lightning-bolt')
-                                    ->default(true)
-                                    ->inline(false),
-                            ])->columns(2),
-
-                        Section::make('Media')
-                            ->schema([
                                 Forms\Components\FileUpload::make('image_path')
                                     ->disk('public')
                                     ->directory('question-images')
                                     ->preserveFilenames()
                                     ->name('Image')
-                            ]),
+                            ])->columns(1),
                     ])->columnSpan(2),
 
                 Forms\Components\Group::make()
@@ -71,10 +73,18 @@ class QuizResource extends Resource
 
                                 DateTimePicker::make('valid_from')
                                     ->default(now())
+                                    ->label('Valid from')
                                     ->required(),
 
                                 DateTimePicker::make('valid_upto')
+                                    ->label('Valid upto')
                                     ->required(),
+
+                                Toggle::make('is_published')
+                                    ->onIcon('heroicon-s-lightning-bolt')
+                                    ->offIcon('heroicon-s-lightning-bolt')
+                                    ->default(true)
+                                    ->inline(false),
                             ]),
 
                         Section::make('Marking')
@@ -106,17 +116,61 @@ class QuizResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable()->limit(50)->label('Quiz'),
-                Tables\Columns\TextColumn::make('slug')->sortable()->searchable()->limit(50)->label('Slug'),
-                Tables\Columns\TextColumn::make('valid_from')->label('From'),
-                Tables\Columns\TextColumn::make('valid_upto')->label('To'),
-                BooleanColumn::make('is_published')->label('Published'),
+                Tables\Columns\TextColumn::make('slug')->sortable()->searchable()->limit(50)->label('Slug')->hidden(
+                    function (?Model $record) {
+                        if (auth()->user()->hasRole('filament_user')) {
+                            // if filament_user, hide column
+                            return true;
+                        }
+                        // show column if not filament_user
+                        return false;
+                    }
+                ),
+                Tables\Columns\TextColumn::make('valid_from'),
+                Tables\Columns\TextColumn::make('valid_upto'),
                 Tables\Columns\TextColumn::make('duration')->label('Duration'),
+                // nanti buat only show published
+                BooleanColumn::make('is_published')->label('Published')->hidden(
+                    function (?Model $record) {
+                        if (auth()->user()->hasRole('filament_user')) {
+                            // if filament_user, hide column
+                            return true;
+                        }
+                        // show column if not filament_user
+                        return false;
+                    }
+                ),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Action::make('attemptQuiz')
+                    ->label(__('Attempt'))
+                    // nanti buat hide action kalau tengah attempt quiz nya
+                    // ->hidden(fn ($record) => $record->attempt != null)
+                    ->action(function ($livewire, Quiz $record, array $data): void {
+                        $newQuizAttempt = $record->attempts()->create([
+                            'quiz_id' => $record->id,
+                            'participant_id' => Auth::id(),
+                        ]);
+
+                        $livewire->redirect(QuizResource::getURL('answer', $record->id));
+                    })
+                    ->requiresConfirmation()
+                    ->modalHeading('Attempt Quiz')
+                    ->modalSubheading('Are you sure you\'d like to attempt the quiz?')
+                    ->modalButton('Yes')
+                    ->icon('heroicon-s-book-open')
+                    ->hidden(
+                        function (?Model $record) {
+                            if (auth()->user()->hasRole('super_admin')) {
+                                // if filament_user, hide column
+                                return true;
+                            }
+                            // show column if not filament_user
+                            return false;
+                        }
+                    ),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -143,6 +197,7 @@ class QuizResource extends Resource
             'index' => Pages\ListQuizzes::route('/'),
             'create' => Pages\CreateQuiz::route('/create'),
             'edit' => Pages\EditQuiz::route('/{record}/edit'),
+            'answer' => Pages\AnswerQuiz::route('/{record}/answer'),
         ];
     }
 }
