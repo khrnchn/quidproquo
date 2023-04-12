@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\QuizResource\Pages;
 use App\Filament\Resources\QuizResource\Pages\AnswerQuiz;
 use App\Filament\Resources\QuizResource\RelationManagers;
+use App\Filament\Resources\QuizResource\RelationManagers\QuestionsRelationManager;
 use App\Filament\Resources\QuizResource\RelationManagers\TopicsRelationManager;
 use App\Filament\Resources\QuizResource\Widgets\QuizOverview;
 use App\Models\User;
@@ -181,6 +182,7 @@ class QuizResource extends Resource
     {
         return [
             TopicsRelationManager::class,
+            QuestionsRelationManager::class,
         ];
     }
 

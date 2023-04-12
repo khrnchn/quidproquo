@@ -4,6 +4,7 @@ namespace App\Filament\Resources\QuizResource\Pages;
 
 use App\Filament\Resources\QuizResource;
 use Filament\Resources\Pages\Page;
+use Harishdurga\LaravelQuiz\Models\QuestionOption;
 use Harishdurga\LaravelQuiz\Models\Quiz;
 
 class AnswerQuiz extends Page
@@ -16,6 +17,9 @@ class AnswerQuiz extends Page
     public Quiz $quiz;
     public $timeLeft = 1800;
     public $formattedTime;
+    public $selectedAnswers;
+    public $progress;
+    public $currentQuestionIndex = 0; // Keep track of the current question index
 
     public function updateTimer()
     {
@@ -33,9 +37,25 @@ class AnswerQuiz extends Page
 
     public function mount($record)
     {
-        $quiz = Quiz::with(['topics.questions'])->find($record);
-
+        $quiz = Quiz::with(['topics.questions.options'])->find($record);
+        $this->selectedAnswers = collect([]);
         $this->quiz = $quiz;
+    }
+
+    public function getProgress()
+    {
+        $answeredQuestions = 0;
+        $questionCount = count($this->quiz->topics->flatMap->questions);
+
+        foreach ($this->quiz->topics as $topic) {
+            foreach ($topic->questions as $question) {
+                if ($this->selectedAnswers->has($question->id)) {
+                    $answeredQuestions++;
+                }
+            }
+        }
+
+        return $answeredQuestions / $questionCount * 100;
     }
 
     public function submit()
@@ -46,10 +66,12 @@ class AnswerQuiz extends Page
     public function previous()
     {
         // Handle "Previous" button click
+        $this->currentQuestionIndex = max(0, $this->currentQuestionIndex - 1);
     }
 
     public function next()
     {
         // Handle "Next" button click
+        $this->currentQuestionIndex = min(count($this->quiz->topics->flatMap->questions) - 1, $this->currentQuestionIndex + 1);
     }
 }
