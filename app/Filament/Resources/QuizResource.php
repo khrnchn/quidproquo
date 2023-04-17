@@ -9,12 +9,14 @@ use App\Filament\Resources\QuizResource\RelationManagers\QuestionsRelationManage
 use App\Filament\Resources\QuizResource\RelationManagers\TopicsRelationManager;
 use App\Filament\Resources\QuizResource\Widgets\QuizOverview;
 use App\Models\User;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Http\Livewire\Notifications;
@@ -31,6 +33,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Icetalker\FilamentStepper\Forms\Components\Stepper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use RalphJSmit\Filament\Components\Forms\Timestamps;
 use RalphJSmit\Filament\Components\Forms\Sidebar;
 
@@ -49,20 +52,26 @@ class QuizResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([   
+            ->schema([
 
                 Forms\Components\Group::make()
                     ->schema([
                         Section::make('General')
                             ->schema([
-                                Forms\Components\TextInput::make('name')->required(),
-                                Forms\Components\TextInput::make('slug')->required(),
-                                Forms\Components\Textarea::make('description')->required(),
-                                Forms\Components\FileUpload::make('image_path')
-                                    ->disk('public')
-                                    ->directory('question-images')
-                                    ->preserveFilenames()
-                                    ->name('Image')
+                                TextInput::make('name')->required(),
+                                TextInput::make('slug')->required(),
+                                Textarea::make('description')->required(),
+                                FileUpload::make('media_url')
+                                    ->disk('quiz')
+                                    ->image()
+                                    // 12 mb
+                                    ->maxSize(12000)
+                                    ->required()
+                                    ->label(__('Image'))
+                                    ->placeholder(__('Upload Quiz Image Here'))
+                                    ->imageCropAspectRatio('18:9')
+                                    ->imageResizeTargetWidth('720')
+                                    ->imageResizeTargetHeight('350'),
                             ])->columns(1),
                     ])->columnSpan(2),
 
@@ -116,31 +125,108 @@ class QuizResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->sortable()->searchable()->limit(50)->label('Quiz'),
-                Tables\Columns\TextColumn::make('slug')->sortable()->searchable()->limit(50)->label('Slug')->hidden(
-                    function (?Model $record) {
-                        if (auth()->user()->hasRole('filament_user')) {
-                            // if filament_user, hide column
-                            return true;
+                Tables\Columns\ImageColumn::make('media_url')
+                    ->square()
+                    ->disk('quiz')
+                    ->grow(false),
+
+                Tables\Columns\TextColumn::make('name')
+                    ->sortable()
+                    ->searchable()
+                    ->weight('medium')
+                    ->limit(50),
+
+                Tables\Columns\TextColumn::make('slug')
+                    ->sortable()
+                    ->searchable()
+                    ->limit(50)
+                    ->label('Slug')  
+                    ->hidden(
+                        function (?Model $record) {
+                            if (auth()->user()->hasRole('filament_user')) {
+                                // if filament_user, hide column
+                                return true;
+                            }
+                            // show column if not filament_user
+                            return false;
                         }
-                        // show column if not filament_user
-                        return false;
-                    }
-                ),
-                Tables\Columns\TextColumn::make('valid_from'),
-                Tables\Columns\TextColumn::make('valid_upto'),
-                Tables\Columns\TextColumn::make('duration')->label('Duration'),
+                    ),
+
+                Tables\Columns\TextColumn::make('valid_from')
+                    ->color('secondary')
+                    ->hidden(
+                        function (?Model $record) {
+                            if (auth()->user()->hasRole('filament_user')) {
+                                // if filament_user, hide column
+                                return true;
+                            }
+                            // show column if not filament_user
+                            return false;
+                        }
+                    ),
+
+                Tables\Columns\TextColumn::make('valid_upto')
+                    ->color('secondary')
+                    ->hidden(
+                        function (?Model $record) {
+                            if (auth()->user()->hasRole('filament_user')) {
+                                // if filament_user, hide column
+                                return true;
+                            }
+                            // show column if not filament_user
+                            return false;
+                        }
+                    ),
+
+                Tables\Columns\TextColumn::make('duration')
+                    ->getStateUsing(function ($record) {
+                        $durationInSeconds = $record->duration;
+                        $duration = '';
+
+                        if ($durationInSeconds >= 3600) {
+                            $hours = intval($durationInSeconds / 3600);
+                            $durationInSeconds -= $hours * 3600;
+                            $duration .= $hours . ' hour' . ($hours > 1 ? 's' : '') . ' ';
+                        }
+
+                        if ($durationInSeconds >= 60) {
+                            $minutes = intval($durationInSeconds / 60);
+                            $durationInSeconds -= $minutes * 60;
+                            $duration .= $minutes . ' minute' . ($minutes > 1 ? 's' : '') . ' ';
+                        }
+
+                        if ($durationInSeconds > 0 || empty($duration)) {
+                            $duration .= $durationInSeconds . ' second' . ($durationInSeconds > 1 ? 's' : '');
+                        }
+
+                        return trim($duration);
+                    })
+                    ->icon('heroicon-o-clock'),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->getStateUsing(function ($record) {
+                        return Carbon::parse($record->created_at)->format('j F Y');
+                    })
+                    ->icon('heroicon-o-calendar'),
+
                 // nanti buat only show published
-                BooleanColumn::make('is_published')->label('Published')->hidden(
-                    function (?Model $record) {
-                        if (auth()->user()->hasRole('filament_user')) {
-                            // if filament_user, hide column
-                            return true;
+                BooleanColumn::make('is_published')
+                    ->label('Published')
+                    ->hidden(
+                        function (?Model $record) {
+                            if (auth()->user()->hasRole('filament_user')) {
+                                // if filament_user, hide column
+                                return true;
+                            }
+                            // show column if not filament_user
+                            return false;
                         }
-                        // show column if not filament_user
-                        return false;
-                    }
-                ),
+                    ),
+
+                Tables\Columns\Layout\Panel::make([
+                    Tables\Columns\TextColumn::make('description')
+                        ->size('sm'),
+                ])->collapsible(),
             ])
             ->filters([])
             ->actions([
@@ -175,6 +261,11 @@ class QuizResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+            ])
+            ->contentGrid([
+                'default' => 1,
+                'md' => 2,
+                'xl' => 3,
             ]);
     }
 

@@ -42,10 +42,16 @@ class QuestionResource extends Resource
                 Forms\Components\Textarea::make('name')->required()->label('Question'),
 
                 Forms\Components\FileUpload::make('image_path')
-                    ->label('Image')
-                    ->disk('public')
-                    ->directory('question-images')
-                    ->preserveFilenames(),
+                    ->disk('question')
+                    ->image()
+                    // 12 mb
+                    ->maxSize(12000)
+                    ->required()
+                    ->label(__('Image'))
+                    ->placeholder(__('Upload Question Image Here'))
+                    ->imageCropAspectRatio('18:9')
+                    ->imageResizeTargetWidth('720')
+                    ->imageResizeTargetHeight('350'),
 
                 Forms\Components\Select::make('question_type_id')
                     ->relationship('question_type', 'name'),

@@ -44,6 +44,20 @@ return [
             'throw' => false,
         ],
 
+        'question' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/images/question'),
+            'url' => env('APP_URL') . '/storage/images/question',
+            'visibility' => 'public',
+        ],
+
+        'quiz' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/images/quiz'),
+            'url' => env('APP_URL') . '/storage/images/quiz',
+            'visibility' => 'public',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
