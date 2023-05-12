@@ -6,6 +6,7 @@ use App\Filament\Resources\QuizResource;
 use Filament\Resources\Pages\Page;
 use Harishdurga\LaravelQuiz\Models\QuestionOption;
 use Harishdurga\LaravelQuiz\Models\Quiz;
+use Illuminate\Support\Facades\Redirect;
 
 class AnswerQuiz extends Page
 {
@@ -60,18 +61,7 @@ class AnswerQuiz extends Page
 
     public function submit()
     {
-        // Handle form submission
-    }
-
-    public function previous()
-    {
-        // Handle "Previous" button click
-        $this->currentQuestionIndex = max(0, $this->currentQuestionIndex - 1);
-    }
-
-    public function next()
-    {
-        // Handle "Next" button click
-        $this->currentQuestionIndex = min(count($this->quiz->topics->flatMap->questions) - 1, $this->currentQuestionIndex + 1);
+        $url = QuizResource::getURL('result', $this->quiz->id);
+        return Redirect::to($url);
     }
 }

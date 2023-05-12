@@ -47,7 +47,7 @@
                                                 focus:ring-offset-0
                                                 focus:ring-sky-200
                                                 focus:ring-opacity-50
-                                                " value="{{ $option->id }}"  />
+                                                " value="{{ $option->id }}" />
                                     <span class="ml-2">{{ $option->name }} </span>
                                 </label>
                             </div>
@@ -59,8 +59,8 @@
                 @endforeach
                 @endforeach
                 <div class="flex justify-between items-center">
-                    <x-filament::button type="button">Previous</x-filament::button>
-                    <x-filament::button type="submit">Next</x-filament::button>
+                    <x-filament::button type="button">Cancel</x-filament::button>
+                    <x-filament::button type="submit">Submit</x-filament::button>
                 </div>
             </form>
         </div>

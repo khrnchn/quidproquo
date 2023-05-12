@@ -46,7 +46,6 @@ class QuestionResource extends Resource
                     ->image()
                     // 12 mb
                     ->maxSize(12000)
-                    ->required()
                     ->label(__('Image'))
                     ->placeholder(__('Upload Question Image Here'))
                     ->imageCropAspectRatio('18:9')

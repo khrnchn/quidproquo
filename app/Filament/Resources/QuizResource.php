@@ -47,7 +47,7 @@ class QuizResource extends Resource
 
     protected static ?int $navigationSort = 4;
 
-    protected static ?string $navigationGroup = 'Manage';
+     
 
     public static function form(Form $form): Form
     {
@@ -140,7 +140,7 @@ class QuizResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->limit(50)
-                    ->label('Slug')  
+                    ->label('Slug')
                     ->hidden(
                         function (?Model $record) {
                             if (auth()->user()->hasRole('filament_user')) {
@@ -291,6 +291,7 @@ class QuizResource extends Resource
             'create' => Pages\CreateQuiz::route('/create'),
             'edit' => Pages\EditQuiz::route('/{record}/edit'),
             'answer' => Pages\AnswerQuiz::route('/{record}/answer'),
+            'result' => Pages\ViewQuiz::route('/{record}/result'),
         ];
     }
 }

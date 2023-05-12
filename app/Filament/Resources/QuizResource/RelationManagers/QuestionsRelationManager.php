@@ -22,9 +22,9 @@ class QuestionsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                // Forms\Components\Select::make('question_id')
-                //     ->relationship('question', 'name')
-                //     ->required(),
+                Forms\Components\Select::make('question_id')
+                    ->relationship('question', 'name')
+                    ->required(),
             ]);
     }
 
@@ -38,12 +38,8 @@ class QuestionsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                // Tables\Actions\CreateAction::make(),
-                Tables\Actions\AttachAction::make()->form(fn (AttachAction $action): array => [
-                    Forms\Components\Select::make('question_id')
-                        ->relationship('question', 'name')
-                        ->required(),
-                ]),
+                Tables\Actions\CreateAction::make(),
+                Tables\Actions\AttachAction::make(), // everything in topicable must be inserted into QuizQuestion model
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
