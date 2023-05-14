@@ -14,6 +14,7 @@
         "bezhansalleh/filament-language-switch": "^1.0",
         "bezhansalleh/filament-shield": "^2.4",
         "camya/filament-title-with-slug": "^0.5.4",
+        "discoverlance/filament-page-hints": "^1.0",
         "filament/filament": "^2.16",
         "filament/spatie-laravel-media-library-plugin": "^2.17",
         "guzzlehttp/guzzle": "^7.2",
@@ -26,7 +27,8 @@
         "laravel/tinker": "^2.7",
         "livewire/livewire": "^2.11",
         "pxlrbt/filament-spotlight": "^0.3.7",
-        "ralphjsmit/laravel-filament-components": "^1.2"
+        "ralphjsmit/laravel-filament-components": "^1.2",
+        "stephenjude/filament-blog": "^1.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

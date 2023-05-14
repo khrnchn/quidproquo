@@ -210,11 +210,11 @@ class QuizResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Action::make('attemptQuiz')
-                    ->label(__('Attempt'))
+                    ->label(__('Start'))
                     // nanti buat hide action kalau tengah attempt quiz nya
                     // ->hidden(fn ($record) => $record->attempt != null)
                     ->action(function ($livewire, Quiz $record, array $data): void {
-                        $newQuizAttempt = $record->attempts()->create([
+                        $record->attempts()->create([
                             'quiz_id' => $record->id,
                             'participant_id' => Auth::id(),
                         ]);
@@ -222,7 +222,7 @@ class QuizResource extends Resource
                         $livewire->redirect(QuizResource::getURL('attempt', $record->id));
                     })
                     ->requiresConfirmation()
-                    ->modalHeading('Attempt Quiz')
+                    ->modalHeading('Start Quiz')
                     ->modalSubheading('Are you sure you\'d like to attempt the quiz?')
                     ->modalButton('Yes')
                     ->icon('heroicon-s-book-open')
