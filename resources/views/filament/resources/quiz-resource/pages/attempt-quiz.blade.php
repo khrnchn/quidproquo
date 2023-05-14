@@ -1,49 +1,74 @@
 <x-filament::page>
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="w-full mb-6 sm:flex items-center justify-between p-6 bg-white sm:rounded-lg shadow dark:bg-gray-800">
-                <h3 class="text-gray-900 text-lg font-medium flex-shrink-1">
-                    <span class="flex items-center">
-                        <span class="dark:text-white">
-                            {{ $question->name }}
+    <form wire:submit.prevent="submit">
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <!-- question name -->
+                <x-filament::card class="w-full mb-6 sm:flex  justify-between p-6 bg-white sm:rounded-lg shadow dark:bg-gray-800">
+                    <h3 class="text-gray-900 text-lg font-medium flex-shrink-1">
+                        <span class="flex ">
+                            <span class="dark:text-white">
+                                {{ $question->name }}
+                            </span>
+
+                            <!-- for showing question results -->
+                            @if($this->optionIsCorrect === 1)
+                            <span class="text-green-500 font-bold inline-block ml-1 -mb-1 ">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                                </svg>
+                            </span>
+                            @elseif($this->optionIsCorrect === 0)
+                            <span class="text-red-500 font-bold inline-block ml-1 -mb-1 ">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </span>
+                            @endif
                         </span>
-                    </span>
-                </h3>
-                <!-- <span class="flex-shrink-0">
-                        <span class="text-gray-400 truncate">4 Remaining</span>
-                    </span> -->
-            </div>
-            <fieldset>
-                <div class="bg-white sm:rounded-md -space-y-px dark:bg-gray-800">
-                    <label class="border-gray-200 dark:border-gray-600  border-gray-200 sm:rounded-tl-md sm:rounded-tr-md relative border p-4 flex items-center relative border p-4 flex items-center cursor-pointer">
-                        {{ $this->form }}
-                    </label>
+                    </h3>
+                </x-filament::card>
+
+                <!-- for showing answer explanation -->
+                @if(!empty($optionExplanation))
+                <div class="w-full mt-6 mb-6 p-6 sm:rounded-lg shadow bg-green-100 text-green-800 dark:bg-green-200 dark:text-green-900">
+                    <strong>Explanation/Notes:</strong> {{ $this->optionExplanation }}
                 </div>
-            </fieldset>
-            <div class="w-full mt-6 text-center text-gray-400 text-sm">
-                <strong>Tip: {{ $answered }} questions have already been answered!</strong>
-            </div>
-            <div class="w-full mt-6 flex items-center justify-between p-6 bg-white sm:rounded-lg shadow dark:bg-gray-800">
-                <button wire:click="" wire:loading.attr="disabled" wire:loading.class="disabled:opacity-50 disabled:cursor-wait" type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    <span wire:loading.remove wire:target="">
-                        Prev
-                    </span>
-                    <span wire:loading wire:target="">
-                        Loading...
-                    </span>
-                </button>
-                <button wire:click="" wire:loading.attr="disabled" type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600">
-                    Clear
-                </button>
-                <button wire:click="" wire:loading.attr="disabled" wire:loading.class="disabled:opacity-50 disabled:cursor-wait" type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    <span wire:loading.remove wire:target="next">
-                        Save & Next
-                    </span>
-                    <span wire:loading wire:target="">
-                        Loading...
-                    </span>
-                </button>
+                @endif
+
+                <fieldset>
+                    <div class="bg-white sm:rounded-md -space-y-px dark:bg-gray-800">
+                        <label class="border-gray-200 dark:border-gray-600  border-gray-200 sm:rounded-tl-md sm:rounded-tr-md relative border p-4 flex items-center relative border p-4 flex items-center cursor-pointer">
+                            {{ $this->form }}
+                        </label>
+                    </div>
+                </fieldset>
+
+                <div class="w-full mt-6 text-center text-gray-400 text-sm">
+                    <strong>Tip: {{ $answered }} questions have already been answered!</strong>
+                </div>
+
+                <div class="w-full mt-6 flex items-center justify-between p-6 bg-white sm:rounded-lg shadow dark:bg-gray-800">
+                    <button wire:click="" wire:loading.attr="disabled" wire:loading.class="disabled:opacity-50 disabled:cursor-wait" type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
+                        <span wire:loading.remove wire:target="">
+                            Prev
+                        </span>
+                        <span wire:loading wire:target="">
+                            Loading...
+                        </span>
+                    </button>
+                    <button wire:click="clear" wire:loading.attr="disabled" type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600">
+                        Clear
+                    </button>
+                    <button wire:click="answer" wire:loading.attr="disabled" wire:loading.class="disabled:opacity-50 disabled:cursor-wait" type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
+                        <span wire:loading.remove wire:target="next">
+                            Save & Next
+                        </span>
+                        <span wire:loading wire:target="">
+                            Loading...
+                        </span>
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
+    </form>
 </x-filament::page>
