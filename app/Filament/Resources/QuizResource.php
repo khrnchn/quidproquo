@@ -25,8 +25,12 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\Layout;
 use Harishdurga\LaravelQuiz\Models\Quiz;
 use Harishdurga\LaravelQuiz\Models\QuizAttempt;
+use Harishdurga\LaravelQuiz\Models\QuizQuestion;
+use Harishdurga\LaravelQuiz\Models\Topicable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Icetalker\FilamentStepper\Forms\Components\Stepper;
@@ -54,9 +58,17 @@ class QuizResource extends Resource
             ->schema([
                 Section::make('General')
                     ->schema([
-                        TextInput::make('name')->required(),
-                        TextInput::make('slug')->required(),
-                        Textarea::make('description')->required(),
+                        TextInput::make('name')
+                            ->required(),
+                        TextInput::make('slug')
+                            ->required(),
+                        Textarea::make('description')
+                            ->required(),
+                        Toggle::make('is_published')
+                            ->onIcon('heroicon-s-lightning-bolt')
+                            ->offIcon('heroicon-s-lightning-bolt')
+                            ->default(true)
+                            ->inline(false),
                         // FileUpload::make('media_url')
                         //     ->disk('quiz')
                         //     ->image()
@@ -150,20 +162,21 @@ class QuizResource extends Resource
                 // show how many topics of a quiz
                 Tables\Columns\TextColumn::make('topic_count')
                     ->getStateUsing(function ($record) {
-                        // count number of questions belongs to the quiz
-                        $test = rand(1, 3);
+                        $topics = Topicable::where([
+                            'topicable_id' => $record->id,
+                            'topicable_type' => 'Harishdurga\LaravelQuiz\Models\Quiz',
+                        ])->count();
 
-                        return $test . ' topics';
+                        return $topics . ' topics';
                     })
                     ->icon('heroicon-o-academic-cap'),
 
                 // show how many questions of a quiz
                 Tables\Columns\TextColumn::make('question_count')
                     ->getStateUsing(function ($record) {
-                        // count number of questions belongs to the quiz
-                        $test = rand(7, 15);
+                        $questions = QuizQuestion::where('quiz_id', $record->id)->count();
 
-                        return $test . ' questions';
+                        return $questions . ' questions';
                     })
                     ->icon('heroicon-o-collection'),
 
@@ -186,7 +199,14 @@ class QuizResource extends Resource
                         ->size('sm'),
                 ])->collapsible(),
             ])
-            ->filters([])
+            ->filters(
+                [
+                    Filter::make('is_published')
+                        ->label('Published')
+                        ->default()
+                        ->query(fn (Builder $query): Builder => $query->where('is_published', true))
+                ],
+            )
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Action::make('attemptQuiz')

@@ -7,8 +7,10 @@ use App\Filament\Resources\QuestionResource\Pages;
 use App\Filament\Resources\QuestionResource\RelationManagers;
 use App\Filament\Resources\QuestionResource\RelationManagers\OptionsRelationManager;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -16,6 +18,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Harishdurga\LaravelQuiz\Models\Question as ModelsQuestion;
@@ -39,9 +42,9 @@ class QuestionResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Textarea::make('name')->required()->label('Question'),
+                Textarea::make('name')->required()->label('Question'),
 
-                Forms\Components\FileUpload::make('image_path')
+                FileUpload::make('image_path')
                     ->disk('question')
                     ->image()
                     // 12 mb
@@ -64,7 +67,10 @@ class QuestionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->sortable()->searchable()->limit(80)->label('Question'),
+                TextColumn::make('name')->sortable()->searchable()->limit(80)->label('Question'),
+
+                TextColumn::make('topics.name')
+                    ->label('Topic'),
 
                 BooleanColumn::make('is_active')->label('Status'),
             ])
@@ -75,7 +81,6 @@ class QuestionResource extends Resource
 
                 Filter::make('Inactive')
                     ->query(fn (Builder $query): Builder => $query->where('is_active', false)),
-
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
