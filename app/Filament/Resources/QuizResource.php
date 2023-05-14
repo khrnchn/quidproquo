@@ -209,6 +209,7 @@ class QuizResource extends Resource
             )
             ->actions([
                 Tables\Actions\EditAction::make(),
+
                 Action::make('attemptQuiz')
                     ->label(__('Start'))
                     // nanti buat hide action kalau tengah attempt quiz nya
@@ -227,15 +228,35 @@ class QuizResource extends Resource
                     ->modalButton('Yes')
                     ->icon('heroicon-s-book-open')
                     ->hidden(
-                        function (?Model $record) {
+                        function (Quiz $record) {
                             if (auth()->user()->hasRole('super_admin')) {
                                 // if filament_user, hide column
                                 return true;
-                            }
-                            // show column if not filament_user
+                            } 
+
                             return false;
+                            
+                            // else {
+                            //     // handle if user is currently already attempting the quiz
+
+                            //     $existingAttempt = QuizAttempt::where([
+                            //         'quiz_id' => $record->id,
+                            //         'participant_id' => Auth::id(),
+                            //     ])->first();
+
+                            //     if ($existingAttempt == null) {
+                            //         return true;
+                            //     }
+
+                            //     // hide 
+                            //     return false;
+                            // }
                         }
                     ),
+
+                // action for continuing existing quiz attempt
+
+
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

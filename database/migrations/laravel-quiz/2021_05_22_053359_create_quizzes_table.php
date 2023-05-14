@@ -119,6 +119,7 @@ class CreateQuizzesTable extends Migration
             $table->foreignId('quiz_attempt_id')->nullable()->constrained($this->tableNames['quiz_attempts'])->cascadeOnDelete();
             $table->foreignId('quiz_question_id')->nullable()->constrained($this->tableNames['quiz_questions'])->cascadeOnDelete();
             $table->foreignId('question_option_id')->nullable()->constrained($this->tableNames['question_options'])->cascadeOnDelete();
+            $table->foreignId('current_question_id')->nullable()->constrained($this->tableNames['quiz_questions'])->cascadeOnDelete();
             $table->string('answer')->nullable();
             $table->timestamps();
             $table->softDeletes();
