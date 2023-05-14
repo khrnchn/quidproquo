@@ -22,7 +22,7 @@ class OptionsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                Forms\Components\TextArea::make('name')
                     ->required()
                     ->maxLength(255)
                     ->label('Option'),

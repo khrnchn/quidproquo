@@ -3,12 +3,11 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\QuizResource\Pages;
-use App\Filament\Resources\QuizResource\Pages\AnswerQuiz;
+use App\Filament\Resources\QuizResource\Pages\CreateQuiz;
 use App\Filament\Resources\QuizResource\RelationManagers;
 use App\Filament\Resources\QuizResource\RelationManagers\QuestionsRelationManager;
 use App\Filament\Resources\QuizResource\RelationManagers\TopicsRelationManager;
 use App\Filament\Resources\QuizResource\Widgets\QuizOverview;
-use App\Models\User;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Tables\Actions\Action;
@@ -45,80 +44,76 @@ class QuizResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
 
-    protected static ?int $navigationSort = 4;
+    protected static ?string $navigationGroup = 'Manage';
 
-     
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-
-                Forms\Components\Group::make()
+                Section::make('General')
                     ->schema([
-                        Section::make('General')
-                            ->schema([
-                                TextInput::make('name')->required(),
-                                TextInput::make('slug')->required(),
-                                Textarea::make('description')->required(),
-                                FileUpload::make('media_url')
-                                    ->disk('quiz')
-                                    ->image()
-                                    // 12 mb
-                                    ->maxSize(12000)
-                                    ->required()
-                                    ->label(__('Image'))
-                                    ->placeholder(__('Upload Quiz Image Here'))
-                                    ->imageCropAspectRatio('18:9')
-                                    ->imageResizeTargetWidth('720')
-                                    ->imageResizeTargetHeight('350'),
-                            ])->columns(1),
-                    ])->columnSpan(2),
+                        TextInput::make('name')->required(),
+                        TextInput::make('slug')->required(),
+                        Textarea::make('description')->required(),
+                        // FileUpload::make('media_url')
+                        //     ->disk('quiz')
+                        //     ->image()
+                        //     // 12 mb
+                        //     ->maxSize(12000)
+                        //     ->required()
+                        //     ->label(__('Image'))
+                        //     ->placeholder(__('Upload Quiz Image Here'))
+                        //     ->imageCropAspectRatio('18:9')
+                        //     ->imageResizeTargetWidth('720')
+                        //     ->imageResizeTargetHeight('350'),
+                    ])->columns(1),
 
-                Forms\Components\Group::make()
-                    ->schema([
-                        Section::make('Time Management')
-                            ->schema([
-                                Forms\Components\TextInput::make('duration')->required()->default(1800)->name('Duration in seconds'),
+                // Forms\Components\Group::make()
+                //     ->schema([
+                //         Section::make('Time Management')
+                //             ->schema([
+                //                 Forms\Components\TextInput::make('duration')->required()->default(1800)->name('Duration in seconds'),
 
-                                DateTimePicker::make('valid_from')
-                                    ->default(now())
-                                    ->label('Valid from')
-                                    ->required(),
+                //                 DateTimePicker::make('valid_from')
+                //                     ->default(now())
+                //                     ->label('Valid from')
+                //                     ->required(),
 
-                                DateTimePicker::make('valid_upto')
-                                    ->label('Valid upto')
-                                    ->required(),
+                //                 DateTimePicker::make('valid_upto')
+                //                     ->label('Valid upto')
+                //                     ->required(),
 
-                                Toggle::make('is_published')
-                                    ->onIcon('heroicon-s-lightning-bolt')
-                                    ->offIcon('heroicon-s-lightning-bolt')
-                                    ->default(true)
-                                    ->inline(false),
-                            ]),
+                //                 Toggle::make('is_published')
+                //                     ->onIcon('heroicon-s-lightning-bolt')
+                //                     ->offIcon('heroicon-s-lightning-bolt')
+                //                     ->default(true)
+                //                     ->inline(false),
+                //             ]),
 
-                        Section::make('Marking')
-                            ->schema([
-                                Stepper::make('total_marks')
-                                    ->minValue(1)
-                                    ->maxValue(100)
-                                    ->default(100)
-                                    ->step(1),
+                //         Section::make('Marking')
+                //             ->schema([
+                //                 Stepper::make('total_marks')
+                //                     ->minValue(1)
+                //                     ->maxValue(100)
+                //                     ->default(100)
+                //                     ->step(1),
 
-                                Stepper::make('pass_marks')
-                                    ->minValue(1)
-                                    ->maxValue(100)
-                                    ->default(80)
-                                    ->step(1),
+                //                 Stepper::make('pass_marks')
+                //                     ->minValue(1)
+                //                     ->maxValue(100)
+                //                     ->default(80)
+                //                     ->step(1),
 
-                                Stepper::make('max_attempts')
-                                    ->minValue(1)
-                                    ->maxValue(3)
-                                    ->default(1)
-                                    ->step(1),
-                            ]),
-                    ])->columnSpan(1),
-            ])->columns(3);
+                //                 Stepper::make('max_attempts')
+                //                     ->minValue(1)
+                //                     ->maxValue(3)
+                //                     ->default(1)
+                //                     ->step(1),
+                //             ]),
+                //     ])->columnSpan(1),
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -152,62 +147,25 @@ class QuizResource extends Resource
                         }
                     ),
 
-                Tables\Columns\TextColumn::make('valid_from')
-                    ->color('secondary')
-                    ->hidden(
-                        function (?Model $record) {
-                            if (auth()->user()->hasRole('filament_user')) {
-                                // if filament_user, hide column
-                                return true;
-                            }
-                            // show column if not filament_user
-                            return false;
-                        }
-                    ),
-
-                Tables\Columns\TextColumn::make('valid_upto')
-                    ->color('secondary')
-                    ->hidden(
-                        function (?Model $record) {
-                            if (auth()->user()->hasRole('filament_user')) {
-                                // if filament_user, hide column
-                                return true;
-                            }
-                            // show column if not filament_user
-                            return false;
-                        }
-                    ),
-
-                Tables\Columns\TextColumn::make('duration')
+                // show how many topics of a quiz
+                Tables\Columns\TextColumn::make('topic_count')
                     ->getStateUsing(function ($record) {
-                        $durationInSeconds = $record->duration;
-                        $duration = '';
+                        // count number of questions belongs to the quiz
+                        $test = rand(1, 3);
 
-                        if ($durationInSeconds >= 3600) {
-                            $hours = intval($durationInSeconds / 3600);
-                            $durationInSeconds -= $hours * 3600;
-                            $duration .= $hours . ' hour' . ($hours > 1 ? 's' : '') . ' ';
-                        }
-
-                        if ($durationInSeconds >= 60) {
-                            $minutes = intval($durationInSeconds / 60);
-                            $durationInSeconds -= $minutes * 60;
-                            $duration .= $minutes . ' minute' . ($minutes > 1 ? 's' : '') . ' ';
-                        }
-
-                        if ($durationInSeconds > 0 || empty($duration)) {
-                            $duration .= $durationInSeconds . ' second' . ($durationInSeconds > 1 ? 's' : '');
-                        }
-
-                        return trim($duration);
+                        return $test . ' topics';
                     })
-                    ->icon('heroicon-o-clock'),
+                    ->icon('heroicon-o-academic-cap'),
 
-                Tables\Columns\TextColumn::make('created_at')
+                // show how many questions of a quiz
+                Tables\Columns\TextColumn::make('question_count')
                     ->getStateUsing(function ($record) {
-                        return Carbon::parse($record->created_at)->format('j F Y');
+                        // count number of questions belongs to the quiz
+                        $test = rand(7, 15);
+
+                        return $test . ' questions';
                     })
-                    ->icon('heroicon-o-calendar'),
+                    ->icon('heroicon-o-collection'),
 
                 // nanti buat only show published
                 BooleanColumn::make('is_published')
@@ -241,7 +199,7 @@ class QuizResource extends Resource
                             'participant_id' => Auth::id(),
                         ]);
 
-                        $livewire->redirect(QuizResource::getURL('answer', $record->id));
+                        $livewire->redirect(QuizResource::getURL('attempt', $record->id));
                     })
                     ->requiresConfirmation()
                     ->modalHeading('Attempt Quiz')
@@ -273,7 +231,6 @@ class QuizResource extends Resource
     {
         return [
             TopicsRelationManager::class,
-            QuestionsRelationManager::class,
         ];
     }
 
@@ -291,6 +248,7 @@ class QuizResource extends Resource
             'create' => Pages\CreateQuiz::route('/create'),
             'edit' => Pages\EditQuiz::route('/{record}/edit'),
             'answer' => Pages\AnswerQuiz::route('/{record}/answer'),
+            'attempt' => Pages\AttemptQuiz::route('/{record}/attempt'),
             'result' => Pages\ViewQuiz::route('/{record}/result'),
         ];
     }

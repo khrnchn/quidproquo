@@ -52,9 +52,6 @@ class QuestionResource extends Resource
                     ->imageResizeTargetWidth('720')
                     ->imageResizeTargetHeight('350'),
 
-                Forms\Components\Select::make('question_type_id')
-                    ->relationship('question_type', 'name'),
-
                 Toggle::make('is_active')
                     ->onIcon('heroicon-s-lightning-bolt')
                     ->offIcon('heroicon-s-lightning-bolt')

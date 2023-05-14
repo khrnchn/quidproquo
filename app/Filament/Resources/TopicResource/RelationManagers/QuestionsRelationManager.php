@@ -3,6 +3,9 @@
 namespace App\Filament\Resources\TopicResource\RelationManagers;
 
 use Filament\Forms;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Table;
@@ -23,9 +26,51 @@ class QuestionsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                Fieldset::make('question')
+                    ->label('Question Details')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\FileUpload::make('image_path')
+                            ->disk('question')
+                            ->image()
+                            // 12 mb
+                            ->maxSize(12000)
+                            ->label(__('Image'))
+                            ->placeholder(__('Upload Question Image Here'))
+                            ->imageCropAspectRatio('18:9')
+                            ->imageResizeTargetWidth('720')
+                            ->imageResizeTargetHeight('350'),
+
+                        Toggle::make('is_active')
+                            ->onIcon('heroicon-s-lightning-bolt')
+                            ->offIcon('heroicon-s-lightning-bolt')
+                            ->inline(false),
+
+                        // Fieldset::make('options')
+                        //     ->label('Question Options')
+                        //     ->schema([
+                        //         Repeater::make('options')
+                        //             ->label('')
+                        //             ->schema([
+                        //                 Forms\Components\TextInput::make('name')
+                        //                     ->required()
+                        //                     ->maxLength(255)
+                        //                     ->label('Option'),
+
+                        //                 Forms\Components\TextArea::make('explanation')
+                        //                     ->required()
+                        //                     ->maxLength(255)
+                        //                     ->label('Explanation'),
+
+                        //                 Toggle::make('is_correct')
+                        //                     ->onIcon('heroicon-s-check')
+                        //                     ->offIcon('heroicon-s-check')
+                        //                     ->inline(false),
+                        //             ]),
+                        //     ])->columns(1),
+                    ])->columns(1),
             ]);
     }
 
