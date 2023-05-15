@@ -29,6 +29,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\Layout;
 use Harishdurga\LaravelQuiz\Models\Quiz;
 use Harishdurga\LaravelQuiz\Models\QuizAttempt;
+use Harishdurga\LaravelQuiz\Models\QuizAttemptAnswer;
 use Harishdurga\LaravelQuiz\Models\QuizQuestion;
 use Harishdurga\LaravelQuiz\Models\Topicable;
 use Illuminate\Database\Eloquent\Builder;
@@ -69,17 +70,17 @@ class QuizResource extends Resource
                             ->offIcon('heroicon-s-lightning-bolt')
                             ->default(true)
                             ->inline(false),
-                        // FileUpload::make('media_url')
-                        //     ->disk('quiz')
-                        //     ->image()
-                        //     // 12 mb
-                        //     ->maxSize(12000)
-                        //     ->required()
-                        //     ->label(__('Image'))
-                        //     ->placeholder(__('Upload Quiz Image Here'))
-                        //     ->imageCropAspectRatio('18:9')
-                        //     ->imageResizeTargetWidth('720')
-                        //     ->imageResizeTargetHeight('350'),
+                        FileUpload::make('media_url')
+                            ->disk('quiz')
+                            ->image()
+                            // 12 mb
+                            ->maxSize(12000)
+                            ->required()
+                            ->label(__('Image'))
+                            ->placeholder(__('Upload Quiz Image Here'))
+                            ->imageCropAspectRatio('18:9')
+                            ->imageResizeTargetWidth('720')
+                            ->imageResizeTargetHeight('350'),
                     ])->columns(1),
 
                 // Forms\Components\Group::make()
@@ -133,9 +134,13 @@ class QuizResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('media_url')
+                    ->width(330)
+                    ->height(100)
                     ->square()
                     ->disk('quiz')
-                    ->grow(false),
+                    ->extraImgAttributes([
+                        'title' => 'Quiz Image',
+                    ]),
 
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
@@ -210,17 +215,21 @@ class QuizResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
 
+                // for first time attempting the quiz
                 Action::make('attemptQuiz')
                     ->label(__('Start'))
-                    // nanti buat hide action kalau tengah attempt quiz nya
-                    // ->hidden(fn ($record) => $record->attempt != null)
                     ->action(function ($livewire, Quiz $record, array $data): void {
                         $record->attempts()->create([
                             'quiz_id' => $record->id,
                             'participant_id' => Auth::id(),
                         ]);
 
-                        $livewire->redirect(QuizResource::getURL('attempt', $record->id));
+                        // create QuizAttemptAnswer later
+
+                        $quizQuestions = QuizQuestion::where('quiz_id', $record->id)->pluck('question_id', 'id');
+                        $quizQuestionId = $quizQuestions->keys()->first();
+
+                        $livewire->redirect(QuizResource::getURL('attempt', [$record->id, $quizQuestionId]));
                     })
                     ->requiresConfirmation()
                     ->modalHeading('Start Quiz')
@@ -230,32 +239,69 @@ class QuizResource extends Resource
                     ->hidden(
                         function (Quiz $record) {
                             if (auth()->user()->hasRole('super_admin')) {
-                                // if filament_user, hide column
+                                // if super_admin, hide action
                                 return true;
-                            } 
+                            } else {
+                                // if filament_user, show action
+                                // handle if user is currently already attempting the quiz
 
-                            return false;
-                            
-                            // else {
-                            //     // handle if user is currently already attempting the quiz
+                                $existingAttempt = QuizAttempt::where([
+                                    'quiz_id' => $record->id,
+                                    'participant_id' => Auth::id(),
+                                ])->first();
 
-                            //     $existingAttempt = QuizAttempt::where([
-                            //         'quiz_id' => $record->id,
-                            //         'participant_id' => Auth::id(),
-                            //     ])->first();
-
-                            //     if ($existingAttempt == null) {
-                            //         return true;
-                            //     }
-
-                            //     // hide 
-                            //     return false;
-                            // }
+                                if ($existingAttempt == null) {
+                                    return false;
+                                } else {
+                                    // hide 
+                                    return true;
+                                }
+                            }
                         }
                     ),
 
                 // action for continuing existing quiz attempt
+                Action::make('continueQuiz')
+                    ->label(__('Continue'))
+                    ->action(function ($livewire, Quiz $record): void {
+                        // get existing quiz attempt
+                        $quizAttemptId = QuizAttempt::where('quiz_id', $record->id)->pluck('id')->first();
 
+                        $quizQuestionId = QuizAttemptAnswer::where([
+                            'quiz_attempt_id' => $quizAttemptId,
+                            'answer' => null
+                        ])->value('quiz_question_id');
+
+                        $livewire->redirect(QuizResource::getURL('attempt', [$record->id, $quizQuestionId]));
+                    })
+                    ->requiresConfirmation()
+                    ->modalHeading('Continue Quiz')
+                    ->modalSubheading('Are you sure you\'d like to continue the quiz?')
+                    ->modalButton('Yes')
+                    ->icon('heroicon-s-arrow-right')
+                    ->hidden(
+                        function (Quiz $record) {
+                            if (auth()->user()->hasRole('super_admin')) {
+                                // if super_admin, hide action
+                                return true;
+                            } else {
+                                // if filament_user, show action
+                                // handle if user is currently already attempting the quiz
+
+                                $existingAttempt = QuizAttempt::where([
+                                    'quiz_id' => $record->id,
+                                    'participant_id' => Auth::id(),
+                                ])->first();
+
+                                if ($existingAttempt == null) {
+                                    return true;
+                                } else {
+                                    // hide 
+                                    return false;
+                                }
+                            }
+                        }
+                    ),
 
             ])
             ->bulkActions([
@@ -288,8 +334,7 @@ class QuizResource extends Resource
             'index' => Pages\ListQuizzes::route('/'),
             'create' => Pages\CreateQuiz::route('/create'),
             'edit' => Pages\EditQuiz::route('/{record}/edit'),
-            'answer' => Pages\AnswerQuiz::route('/{record}/answer'),
-            'attempt' => Pages\AttemptQuiz::route('/{record}/attempt'),
+            'attempt' => Pages\AttemptQuiz::route('/{record}/attempt/{quizQuestion}'),
             'result' => Pages\ViewQuiz::route('/{record}/result'),
         ];
     }
