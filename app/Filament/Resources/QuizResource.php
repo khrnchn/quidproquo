@@ -269,7 +269,7 @@ class QuizResource extends Resource
 
                         $quizQuestionId = QuizAttemptAnswer::where([
                             'quiz_attempt_id' => $quizAttemptId,
-                            'answer' => null
+                            'question_option_id' => null
                         ])->value('quiz_question_id');
 
                         $livewire->redirect(QuizResource::getURL('attempt', [$record->id, $quizQuestionId]));

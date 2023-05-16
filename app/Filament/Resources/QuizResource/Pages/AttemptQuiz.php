@@ -14,6 +14,7 @@ use Harishdurga\LaravelQuiz\Models\QuizAttemptAnswer;
 use Harishdurga\LaravelQuiz\Models\QuizQuestion;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 class AttemptQuiz extends Page
 {
@@ -23,36 +24,58 @@ class AttemptQuiz extends Page
 
     public $answered;
     public $question;
-    public $quizAttemptId;
     public $question_option_id;
     public $optionIsCorrect;
     public $optionExplanation;
     public $quizQuestions;
-    public $formDisabled;
     public $questionId;
+    public $quizQuestion;
+    public $quizAttemptId;
+    public $quizId;
 
     public function mount($record, $quizQuestion)
     {
-        // record = 22, quizQuestion = 56
-        $this->formDisabled = false;
+        $this->answered();
 
-        // display QuizQuestion where id = $quizQuestion = 56
+        // get id from QuizAttempt
+        $quizAttemptId = QuizAttempt::where([
+            'quiz_id' => $record,
+            'participant_id' => Auth::id(),
+        ])->value('id');
+
+        // check if question already answered
+        $option = QuizAttemptAnswer::where([
+            'quiz_question_id' => $quizQuestion,
+            'quiz_attempt_id' => $quizAttemptId,
+        ])->value('question_option_id');
+
         $questionId = QuizQuestion::where('id', $quizQuestion)->value('question_id');
         $this->questionId = $questionId;
 
         $question = Question::where('id', $questionId)->value('name');
 
-        // get current QuizAttempt details
-        $attemptId = QuizAttempt::where([
-            'quiz_id' => $record,
-            'participant_id' => Auth::id(),
-        ])->value('id');
+        $quizId = Route::current()->parameter('record');
 
-        // count total answered questions for the system
-        $answered = QuizAttemptAnswer::all()->count();
-
-        $this->answered = $answered;
         $this->question = $question;
+        $this->quizQuestion = $quizQuestion;
+        $this->quizAttemptId = $quizAttemptId;
+        $this->quizId = $quizId;
+
+        if (is_null($option)) {
+            // column is empty
+            $question = Question::where('id', $questionId)->value('name');
+
+            $this->question = $question;
+        } else {
+            // column is not empty/ already has answer
+
+            // retrieve option from $this->form
+            $this->form->fill([
+                'question_option_id' => $option,
+            ]);
+
+            $this->explanation();
+        }
     }
 
     public function submitAnswer()
@@ -60,31 +83,12 @@ class AttemptQuiz extends Page
         // disable the form
         $this->form->disabled();
 
-        
-
-        // update answer of the previously created QuizAttemptAnswer
-        // $quizQuestionsArray = $this->quizQuestions->toArray();
-
-        // $nextQuestionValue = array_slice($quizQuestionsArray, 1, 1, true); // $nextQuestionValue = 19, question_id of QuizQuestions
-
-        // $newQuizQuestionId = array_key_first($nextQuestionValue); // $nextQuestionId = 56, id of QuizQuestions
-
-        //  Get the first value of the resulting array (next question ID)
-        // $questionIdFromQuizQuestion = reset($nextQuestionValue); // $questionIdFromQuizQuestion = 19;
-
-        // create new QuizAttemptAnswer
-        // QuizAttemptAnswer::create([
-        //     'quiz_question_id' => $newQuizQuestionId,
-        //     'quiz_attempt_id' => $this->quizAttemptId,
-        //     'current_question_id' => $questionIdFromQuizQuestion,
-        // ]);
-
-        // update previous QuizAttemptAnswer
-        // QuizAttemptAnswer::where([
-        //     'quiz_attempt_id' => $this->quizAttemptId, // 55
-        // ])->updateOrCreate([
-        //     'current_question_id' => $questionIdFromQuizQuestion, // new current_question_id @ 19
-        // ]);
+        // save answer in QuizAttemptAnswer
+        QuizAttemptAnswer::where([
+            // check quiz_attempt_id as well
+            'quiz_attempt_id' => $this->quizAttemptId,
+            'quiz_question_id' => $this->quizQuestion,
+        ])->update(['question_option_id' => $this->form->getState()['question_option_id']]);
 
         // show the explanation
         $this->explanation();
@@ -92,6 +96,7 @@ class AttemptQuiz extends Page
 
     public function explanation()
     {
+        $this->form->disabled();
         // show result and explanation
         $optionDetails = QuestionOption::where('id', $this->form->getState())->pluck('explanation', 'is_correct');
 
@@ -102,16 +107,42 @@ class AttemptQuiz extends Page
         $this->optionExplanation = $optionExplanation;
     }
 
-    public function clear()
-    {
-        $this->form->fill();
-    }
-
+    // navigate to the prev question
     public function previous()
     {
-        // get previous question from current question
+        // current quizAttemptAnswer
+        $currentAttemptAnswer = QuizAttemptAnswer::where([
+            'quiz_question_id' => $this->quizQuestion,
+            'quiz_attempt_id' => $this->quizAttemptId,
+        ])->value('created_at');
 
-        // redirect the link with the question id
+        // previous quizAttemptAnswer
+        $prevAttemptAnswer = QuizAttemptAnswer::where([
+            'quiz_attempt_id' => $this->quizAttemptId,
+        ])->where('created_at', '<', $currentAttemptAnswer,)->first(); // if there are multiple questions answered before, first() will which one?
+
+        $prevQuizQuestion = $prevAttemptAnswer->quiz_question_id;
+
+        return redirect(QuizResource::getURL('attempt', [$this->quizId, $prevQuizQuestion]));
+    }
+
+    // continue to the next question
+    public function continue()
+    {
+        // current quizAttemptAnswer
+        $currentAttemptAnswer = QuizAttemptAnswer::where([
+            'quiz_question_id' => $this->quizQuestion,
+            'quiz_attempt_id' => $this->quizAttemptId,
+        ])->value('created_at');
+
+        // next quizAttemptAnswer
+        $nextAttemptAnswer = QuizAttemptAnswer::where([
+            'quiz_attempt_id' => $this->quizAttemptId,
+        ])->where('created_at', '>', $currentAttemptAnswer,)->first();
+
+        $nextQuizQuestion = $nextAttemptAnswer->quiz_question_id;
+
+        return redirect(QuizResource::getURL('attempt', [$this->quizId, $nextQuizQuestion]));
     }
 
     protected function getFormSchema(): array
@@ -124,5 +155,20 @@ class AttemptQuiz extends Page
                         ->pluck('name', 'id')
                 ),
         ];
+    }
+
+    public function answered()
+    {
+        // count total answered questions for the system
+        $answered = QuizAttemptAnswer::all()->count();
+
+        $this->answered = $answered;
+    }
+
+    protected function fillForm()
+    {
+        $this->form->fill([
+            'question_option_id' => 19,
+        ]);
     }
 }
