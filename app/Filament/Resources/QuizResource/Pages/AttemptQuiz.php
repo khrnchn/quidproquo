@@ -3,8 +3,10 @@
 namespace App\Filament\Resources\QuizResource\Pages;
 
 use App\Filament\Resources\QuizResource;
+use Exception;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Page;
 use Harishdurga\LaravelQuiz\Models\Question;
 use Harishdurga\LaravelQuiz\Models\QuestionOption;
@@ -15,6 +17,7 @@ use Harishdurga\LaravelQuiz\Models\QuizQuestion;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\VarDumper\Caster\RedisCaster;
 
 class AttemptQuiz extends Page
 {
@@ -32,6 +35,8 @@ class AttemptQuiz extends Page
     public $quizQuestion;
     public $quizAttemptId;
     public $quizId;
+    public $buttonDisabled = false;
+    public $questionImage;
 
     public function mount($record, $quizQuestion)
     {
@@ -53,10 +58,12 @@ class AttemptQuiz extends Page
         $this->questionId = $questionId;
 
         $question = Question::where('id', $questionId)->value('name');
+        $questionImage = Question::where('id', $questionId)->value('image_path');
 
         $quizId = Route::current()->parameter('record');
 
         $this->question = $question;
+        $this->questionImage = $questionImage;
         $this->quizQuestion = $quizQuestion;
         $this->quizAttemptId = $quizAttemptId;
         $this->quizId = $quizId;
@@ -80,6 +87,11 @@ class AttemptQuiz extends Page
 
     public function submitAnswer()
     {
+        if ($this->form->getState()['question_option_id'] == null) {
+
+            
+        }
+
         // disable the form
         $this->form->disabled();
 
@@ -119,11 +131,32 @@ class AttemptQuiz extends Page
         // previous quizAttemptAnswer
         $prevAttemptAnswer = QuizAttemptAnswer::where([
             'quiz_attempt_id' => $this->quizAttemptId,
-        ])->where('created_at', '<', $currentAttemptAnswer,)->first(); // if there are multiple questions answered before, first() will which one?
+        ])->where('created_at', '<', $currentAttemptAnswer)->first(); // if there are multiple questions answered before, first() will which one?
 
-        $prevQuizQuestion = $prevAttemptAnswer->quiz_question_id;
+        if (!$prevAttemptAnswer) {
+            $this->buttonDisabled = true;
 
-        return redirect(QuizResource::getURL('attempt', [$this->quizId, $prevQuizQuestion]));
+            // send warning notification
+            Notification::make()
+                ->title(__('There are no questions before'))
+                ->warning()
+                ->body(__('Navigate to your answered questions to revise'))
+                ->send();
+
+            // disable form
+            $hasAnswer = QuizAttemptAnswer::where([
+                'quiz_question_id' => $this->quizQuestion,
+                'quiz_attempt_id' => $this->quizAttemptId,
+            ])->value('question_option_id');
+
+            if ($hasAnswer) {
+                $this->form->disabled();
+            }
+        } else {
+            $prevQuizQuestion = $prevAttemptAnswer->quiz_question_id;
+
+            return redirect(QuizResource::getURL('attempt', [$this->quizId, $prevQuizQuestion]));
+        }
     }
 
     // continue to the next question
@@ -138,11 +171,31 @@ class AttemptQuiz extends Page
         // next quizAttemptAnswer
         $nextAttemptAnswer = QuizAttemptAnswer::where([
             'quiz_attempt_id' => $this->quizAttemptId,
-        ])->where('created_at', '>', $currentAttemptAnswer,)->first();
+        ])->where('created_at', '>', $currentAttemptAnswer)->first();
 
-        $nextQuizQuestion = $nextAttemptAnswer->quiz_question_id;
+        if (!$nextAttemptAnswer) {
+            $this->buttonDisabled = true;
 
-        return redirect(QuizResource::getURL('attempt', [$this->quizId, $nextQuizQuestion]));
+            Notification::make()
+                ->title('There are no more questions left')
+                ->warning()
+                ->body('Navigate to your answered questions to revise')
+                ->send();
+
+            // disable form
+            $hasAnswer = QuizAttemptAnswer::where([
+                'quiz_question_id' => $this->quizQuestion,
+                'quiz_attempt_id' => $this->quizAttemptId,
+            ])->value('question_option_id');
+
+            if ($hasAnswer) {
+                $this->form->disabled();
+            }
+        } else {
+            $nextQuizQuestion = $nextAttemptAnswer->quiz_question_id;
+
+            return redirect(QuizResource::getURL('attempt', [$this->quizId, $nextQuizQuestion]));
+        }
     }
 
     protected function getFormSchema(): array
@@ -150,6 +203,7 @@ class AttemptQuiz extends Page
         return [
             Radio::make('question_option_id')
                 ->label('')
+                ->required()
                 ->options(
                     QuestionOption::where('question_id', $this->questionId)
                         ->pluck('name', 'id')

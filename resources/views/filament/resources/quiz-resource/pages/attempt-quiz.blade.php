@@ -1,9 +1,16 @@
 <x-filament::page>
-    <form wire:submit.prevent="submitAnswer" >
+    <form wire:submit.prevent="submitAnswer">
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <!-- question name -->
                 <x-filament::card class="w-full mb-6 sm:flex  justify-between p-6 bg-white sm:rounded-lg shadow dark:bg-gray-800">
+                    <!-- question image -->
+                    @if(!empty($questionImage))
+                    <div class="flex-shrink-0 mr-4">
+                        <img class="h-48 w-48 object-cover rounded-md" src="{{ $questionImage }}" alt="Question Image">
+                    </div>
+                    @endif
+
                     <h3 class="text-gray-900 text-lg font-medium flex-shrink-1">
                         <span class="flex ">
                             <span class="dark:text-white">
@@ -30,8 +37,8 @@
 
                 <!-- for showing answer explanation -->
                 @if(!empty($optionExplanation))
-                <div class="w-full mt-6 mb-6 p-6 sm:rounded-lg shadow bg-green-100 text-green-800 dark:bg-green-200 dark:text-green-900">
-                    <strong>Explanation/Notes:</strong> {{ $this->optionExplanation }}
+                <div class="w-full mt-6 mb-6 p-6 sm:rounded-lg shadow {{ $this->optionIsCorrect === 1 ? 'bg-green-100 text-green-800 dark:bg-green-200 dark:text-green-900' : 'bg-red-100 text-red-800 dark:bg-red-200 dark:text-red-900' }}">
+                    <strong>Explanation:</strong> {{ $this->optionExplanation }}
                 </div>
                 @endif
 
@@ -50,18 +57,17 @@
                 <div class="w-full mt-6 flex items-center justify-between p-6 bg-white sm:rounded-lg shadow dark:bg-gray-800">
                     <button wire:click="previous" type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
                         <span wire:loading.remove wire:target="">
-                            Prev
+                            Previous
                         </span>
                     </button>
-                    <button wire:click="continue" type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600">
+                    <button wire:click="continue" type="button" wire:loading.attr="disabled" :disabled="$buttonDisabled" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600">
                         Continue
                     </button>
                     <button type="submit" type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
                         <span wire:loading.remove wire:target="next">
-                            Save & Next
+                            Submit
                         </span>
                     </button>
-
                 </div>
             </div>
         </div>

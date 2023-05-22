@@ -57,15 +57,18 @@ class QuizResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('General')
+                Section::make(__('General'))
                     ->schema([
                         TextInput::make('name')
+                            ->label(__('name'))
                             ->required(),
                         TextInput::make('slug')
                             ->required(),
                         Textarea::make('description')
+                            ->label(__('description'))
                             ->required(),
                         Toggle::make('is_published')
+                            ->label(__('Published'))
                             ->onIcon('heroicon-s-lightning-bolt')
                             ->offIcon('heroicon-s-lightning-bolt')
                             ->default(true)
@@ -143,6 +146,7 @@ class QuizResource extends Resource
                     ]),
 
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('name'))
                     ->sortable()
                     ->searchable()
                     ->weight('medium')
@@ -207,7 +211,7 @@ class QuizResource extends Resource
             ->filters(
                 [
                     Filter::make('is_published')
-                        ->label('Published')
+                        ->label(__('Published'))
                         ->default()
                         ->query(fn (Builder $query): Builder => $query->where('is_published', true))
                 ],
@@ -232,7 +236,7 @@ class QuizResource extends Resource
                         $livewire->redirect(QuizResource::getURL('attempt', [$record->id, $quizQuestionId]));
                     })
                     ->requiresConfirmation()
-                    ->modalHeading('Start Quiz')
+                    ->modalHeading(__('Start Quiz'))
                     ->modalSubheading('Are you sure you\'d like to attempt the quiz?')
                     ->modalButton('Yes')
                     ->icon('heroicon-s-book-open')
@@ -264,7 +268,7 @@ class QuizResource extends Resource
                 Action::make('continueQuiz')
                     ->label(__('Continue'))
                     ->action(function ($livewire, Quiz $record): void {
-                        // get existing quiz attempt
+                        // get existing quiz attempt`
                         $quizAttemptId = QuizAttempt::where('quiz_id', $record->id)->pluck('id')->first();
 
                         $quizQuestionId = QuizAttemptAnswer::where([
@@ -275,7 +279,7 @@ class QuizResource extends Resource
                         $livewire->redirect(QuizResource::getURL('attempt', [$record->id, $quizQuestionId]));
                     })
                     ->requiresConfirmation()
-                    ->modalHeading('Continue Quiz')
+                    ->modalHeading(__('Continue Quiz'))
                     ->modalSubheading('Are you sure you\'d like to continue the quiz?')
                     ->modalButton('Yes')
                     ->icon('heroicon-s-arrow-right')
