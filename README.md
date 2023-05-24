@@ -87,7 +87,6 @@ Create topics, questions, and quizzes using the admin account. Answer the quizze
 
 - [Laravel](https://laravel.com/) - Web application framework
 - [FilamentPHP](https://filamentphp.com/) - A collection of tools for rapidly building beautiful TALL stack apps
-- [XAMPP](https://www.apachefriends.org/) - Web server/ database
 - [Laravel Quiz](https://github.com/harishdurga/laravel-quiz) - Quiz functionalities, model relationships
 
 ## ✍️ Authors <a name = "authors"></a>
