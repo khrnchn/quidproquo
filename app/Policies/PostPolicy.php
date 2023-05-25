@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\Models\User;
-use Harishdurga\LaravelQuiz\Models\Question;
+use Stephenjude\FilamentBlog\Models\Post;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class QuestionPolicy
+class PostPolicy
 {
     use HandlesAuthorization;
 
@@ -18,19 +18,19 @@ class QuestionPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->can('view_any_question');
+        return $user->can('view_any_post');
     }
 
     /**
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \Harishdurga\LaravelQuiz\Models\Question  $question
+     * @param  \Stephenjude\FilamentBlog\Models\Post  $post
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Question $question)
+    public function view(User $user, Post $post)
     {
-        return $user->can('view_question');
+        return $user->can('view_post');
     }
 
     /**
@@ -41,31 +41,31 @@ class QuestionPolicy
      */
     public function create(User $user)
     {
-        return $user->can('create_question');
+        return $user->can('create_post');
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \Harishdurga\LaravelQuiz\Models\Question  $question
+     * @param  \Stephenjude\FilamentBlog\Models\Post  $post
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Question $question)
+    public function update(User $user, Post $post)
     {
-        return $user->can('update_question');
+        return $user->can('update_post');
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \Harishdurga\LaravelQuiz\Models\Question  $question
+     * @param  \Stephenjude\FilamentBlog\Models\Post  $post
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Question $question)
+    public function delete(User $user, Post $post)
     {
-        return $user->can('delete_question');
+        return $user->can('delete_post');
     }
 
     /**
@@ -76,19 +76,19 @@ class QuestionPolicy
      */
     public function deleteAny(User $user)
     {
-        return $user->can('delete_any_question');
+        return $user->can('delete_any_post');
     }
 
     /**
      * Determine whether the user can permanently delete.
      *
      * @param  \App\Models\User  $user
-     * @param  \Harishdurga\LaravelQuiz\Models\Question  $question
+     * @param  \Stephenjude\FilamentBlog\Models\Post  $post
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Question $question)
+    public function forceDelete(User $user, Post $post)
     {
-        return $user->can('force_delete_question');
+        return $user->can('force_delete_post');
     }
 
     /**
@@ -99,19 +99,19 @@ class QuestionPolicy
      */
     public function forceDeleteAny(User $user)
     {
-        return $user->can('force_delete_any_question');
+        return $user->can('force_delete_any_post');
     }
 
     /**
      * Determine whether the user can restore.
      *
      * @param  \App\Models\User  $user
-     * @param  \Harishdurga\LaravelQuiz\Models\Question  $question
+     * @param  \Stephenjude\FilamentBlog\Models\Post  $post
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Question $question)
+    public function restore(User $user, Post $post)
     {
-        return $user->can('restore_question');
+        return $user->can('restore_post');
     }
 
     /**
@@ -122,19 +122,19 @@ class QuestionPolicy
      */
     public function restoreAny(User $user)
     {
-        return $user->can('restore_any_question');
+        return $user->can('restore_any_post');
     }
 
     /**
      * Determine whether the user can replicate.
      *
      * @param  \App\Models\User  $user
-     * @param  \Harishdurga\LaravelQuiz\Models\Question  $question
+     * @param  \Stephenjude\FilamentBlog\Models\Post  $post
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function replicate(User $user, Question $question)
+    public function replicate(User $user, Post $post)
     {
-        return $user->can('replicate_question');
+        return $user->can('replicate_post');
     }
 
     /**
@@ -145,7 +145,7 @@ class QuestionPolicy
      */
     public function reorder(User $user)
     {
-        return $user->can('reorder_question');
+        return $user->can('reorder_post');
     }
 
 }
