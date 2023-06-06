@@ -11,35 +11,26 @@ use App\Filament\Resources\QuizResource\Widgets\QuizOverview;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Tables\Actions\Action;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Http\Livewire\Notifications;
-use Filament\Notifications\Notification;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\BooleanColumn;
 use Filament\Tables\Filters\Filter;
-use Filament\Tables\Filters\Layout;
 use Harishdurga\LaravelQuiz\Models\Quiz;
 use Harishdurga\LaravelQuiz\Models\QuizAttempt;
 use Harishdurga\LaravelQuiz\Models\QuizAttemptAnswer;
 use Harishdurga\LaravelQuiz\Models\QuizQuestion;
 use Harishdurga\LaravelQuiz\Models\Topicable;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Icetalker\FilamentStepper\Forms\Components\Stepper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use RalphJSmit\Filament\Components\Forms\Timestamps;
-use RalphJSmit\Filament\Components\Forms\Sidebar;
 
 class QuizResource extends Resource
 {
@@ -85,50 +76,6 @@ class QuizResource extends Resource
                             ->imageResizeTargetWidth('720')
                             ->imageResizeTargetHeight('350'),
                     ])->columns(1),
-
-                // Forms\Components\Group::make()
-                //     ->schema([
-                //         Section::make('Time Management')
-                //             ->schema([
-                //                 Forms\Components\TextInput::make('duration')->required()->default(1800)->name('Duration in seconds'),
-
-                //                 DateTimePicker::make('valid_from')
-                //                     ->default(now())
-                //                     ->label('Valid from')
-                //                     ->required(),
-
-                //                 DateTimePicker::make('valid_upto')
-                //                     ->label('Valid upto')
-                //                     ->required(),
-
-                //                 Toggle::make('is_published')
-                //                     ->onIcon('heroicon-s-lightning-bolt')
-                //                     ->offIcon('heroicon-s-lightning-bolt')
-                //                     ->default(true)
-                //                     ->inline(false),
-                //             ]),
-
-                //         Section::make('Marking')
-                //             ->schema([
-                //                 Stepper::make('total_marks')
-                //                     ->minValue(1)
-                //                     ->maxValue(100)
-                //                     ->default(100)
-                //                     ->step(1),
-
-                //                 Stepper::make('pass_marks')
-                //                     ->minValue(1)
-                //                     ->maxValue(100)
-                //                     ->default(80)
-                //                     ->step(1),
-
-                //                 Stepper::make('max_attempts')
-                //                     ->minValue(1)
-                //                     ->maxValue(3)
-                //                     ->default(1)
-                //                     ->step(1),
-                //             ]),
-                //     ])->columnSpan(1),
             ]);
     }
 
@@ -223,15 +170,21 @@ class QuizResource extends Resource
                 Action::make('attemptQuiz')
                     ->label(__('Start'))
                     ->action(function ($livewire, Quiz $record, array $data): void {
-                        $record->attempts()->create([
+                        $quizAttempt = $record->attempts()->create([
                             'quiz_id' => $record->id,
                             'participant_id' => Auth::id(),
+                            'participant_type' => 'filament_user',
                         ]);
-
-                        // create QuizAttemptAnswer later
 
                         $quizQuestions = QuizQuestion::where('quiz_id', $record->id)->pluck('question_id', 'id');
                         $quizQuestionId = $quizQuestions->keys()->first();
+
+                        // create QuizAttemptAnswer later
+                        QuizAttemptAnswer::create([
+                            'quiz_attempt_id' => $quizAttempt->id,
+                            'quiz_question_id' => $quizQuestionId,
+                            'question_option_id' => null,
+                        ]);
 
                         $livewire->redirect(QuizResource::getURL('attempt', [$record->id, $quizQuestionId]));
                     })
@@ -275,6 +228,15 @@ class QuizResource extends Resource
                             'quiz_attempt_id' => $quizAttemptId,
                             'question_option_id' => null
                         ])->value('quiz_question_id');
+
+                        if (!$quizQuestionId) {
+
+                            $quizQuestionId = QuizAttemptAnswer::where([
+                                'quiz_attempt_id' => $quizAttemptId,
+                            ])->first()->value('quiz_question_id');
+
+                            $livewire->redirect(QuizResource::getURL('attempt', [$record->id, $quizQuestionId]));
+                        }
 
                         $livewire->redirect(QuizResource::getURL('attempt', [$record->id, $quizQuestionId]));
                     })

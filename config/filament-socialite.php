@@ -14,13 +14,9 @@ return [
     // These should match the socialite providers you have setup in your services.php config.
     // Uses blade UI icons, for example: https://github.com/owenvoke/blade-fontawesome
     'providers' => [
-//        'gitlab' => [
-//            'label' => 'GitLab',
-//            'icon' => 'fab-gitlab',
-    //    ],
-       'google' => [
-           'label' => 'Google',
-       ],
+        'google' => [
+            'label' => 'Google',
+        ],
     ],
 
     'user_model' => \App\Models\User::class,

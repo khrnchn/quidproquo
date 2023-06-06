@@ -29,9 +29,8 @@ class QuestionsRelationManager extends RelationManager
                 Fieldset::make('question')
                     ->label('Question Details')
                     ->schema([
-                        Forms\Components\TextInput::make('name')
-                            ->required()
-                            ->maxLength(255),
+                        Forms\Components\TextArea::make('name')
+                            ->required(),
                         Forms\Components\FileUpload::make('image_path')
                             ->disk('question')
                             ->image()

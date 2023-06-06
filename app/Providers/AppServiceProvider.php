@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use Filament\Facades\Filament;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Socialite\Contracts\User as SocialiteUserContract;
+use DutchCodingCompany\FilamentSocialite\Facades\FilamentSocialite as FilamentSocialiteFacade;
+use DutchCodingCompany\FilamentSocialite\FilamentSocialite;
 
 class AppServiceProvider extends ServiceProvider
 {

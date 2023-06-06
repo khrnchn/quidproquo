@@ -58,7 +58,7 @@ class AttemptQuiz extends Page
         $this->questionId = $questionId;
 
         $question = Question::where('id', $questionId)->value('name');
-        $questionImage = Question::where('id', $questionId)->value('image_path');
+        $questionImage = Question::where('id', $questionId)->value('media_url');
 
         $quizId = Route::current()->parameter('record');
 
@@ -88,8 +88,11 @@ class AttemptQuiz extends Page
     public function submitAnswer()
     {
         if ($this->form->getState()['question_option_id'] == null) {
-
-            
+            Notification::make()
+                ->title(__('There are no answer selected'))
+                ->danger()
+                ->body(__('Please select one option for the question'))
+                ->send();
         }
 
         // disable the form
@@ -101,6 +104,13 @@ class AttemptQuiz extends Page
             'quiz_attempt_id' => $this->quizAttemptId,
             'quiz_question_id' => $this->quizQuestion,
         ])->update(['question_option_id' => $this->form->getState()['question_option_id']]);
+
+        // create new attempt for next question
+        QuizAttemptAnswer::create([
+            'quiz_attempt_id' => $this->quizAttemptId,
+            'quiz_question_id' => 5, // do something here
+            'question_option_id' => null,
+        ]);
 
         // show the explanation
         $this->explanation();
@@ -162,6 +172,15 @@ class AttemptQuiz extends Page
     // continue to the next question
     public function continue()
     {
+        // check form first
+        if ($this->form->getState()['question_option_id'] == null) {
+            Notification::make()
+                ->title(__('There are no answer selected'))
+                ->danger()
+                ->body(__('Please select one option for the question'))
+                ->send();
+        }
+
         // current quizAttemptAnswer
         $currentAttemptAnswer = QuizAttemptAnswer::where([
             'quiz_question_id' => $this->quizQuestion,
@@ -217,12 +236,5 @@ class AttemptQuiz extends Page
         $answered = QuizAttemptAnswer::all()->count();
 
         $this->answered = $answered;
-    }
-
-    protected function fillForm()
-    {
-        $this->form->fill([
-            'question_option_id' => 19,
-        ]);
     }
 }
