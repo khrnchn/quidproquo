@@ -36,26 +36,21 @@ class TopicResource extends Resource
     {
         return $form
             ->schema([
-                Card::make([
-                    Grid::make(3)
-                        ->schema([
 
-                            Forms\Components\TextInput::make('name')
-                                ->required()
-                                ->lazy()
-                                ->afterStateUpdated(fn (string $context, $state, callable $set) => $context === 'create' ? $set('slug', Str::slug($state)) : null),
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->lazy()
+                    ->afterStateUpdated(fn (string $context, $state, callable $set) => $context === 'create' ? $set('slug', Str::slug($state)) : null),
 
-                            Forms\Components\TextInput::make('slug')
-                                ->disabled()
-                                ->required()
-                                ->unique(ModelsTopic::class, 'slug', ignoreRecord: true),
+                Forms\Components\TextInput::make('slug')
+                    ->disabled()
+                    ->required()
+                    ->unique(ModelsTopic::class, 'slug', ignoreRecord: true),
 
-                            Toggle::make('is_active')
-                                ->onIcon('heroicon-s-lightning-bolt')
-                                ->offIcon('heroicon-s-lightning-bolt')
-                                ->inline(false),
-                        ]),
-                ]),
+                Toggle::make('is_active')
+                    ->onIcon('heroicon-s-lightning-bolt')
+                    ->offIcon('heroicon-s-lightning-bolt')
+                    ->inline(false),
 
             ]);
     }

@@ -105,12 +105,26 @@ class AttemptQuiz extends Page
             'quiz_question_id' => $this->quizQuestion,
         ])->update(['question_option_id' => $this->form->getState()['question_option_id']]);
 
-        // create new attempt for next question
-        QuizAttemptAnswer::create([
-            'quiz_attempt_id' => $this->quizAttemptId,
-            'quiz_question_id' => 5, // do something here
-            'question_option_id' => null,
-        ]);
+        $nextQuestionId = $this->quizQuestion + 1;
+
+        $questionExists = QuizQuestion::where('id', $nextQuestionId)
+            ->where('quiz_id', $this->quizId)
+            ->exists();
+
+        if (!$questionExists) {
+            Notification::make()
+                ->title('There are no more questions left')
+                ->warning()
+                ->body('Navigate to your answered questions to revise')
+                ->send();
+        } else {
+            // create new attempt for next question
+            $newAttempt = QuizAttemptAnswer::create([
+                'quiz_attempt_id' => $this->quizAttemptId,
+                'quiz_question_id' => $this->quizQuestion + 1,
+                'question_option_id' => null,
+            ]);
+        }
 
         // show the explanation
         $this->explanation();

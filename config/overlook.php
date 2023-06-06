@@ -5,6 +5,7 @@ use App\Filament\Resources\QuizResource;
 use App\Filament\Resources\Shield\RoleResource;
 use App\Filament\Resources\TopicResource;
 use App\Filament\Resources\UserResource;
+use Stephenjude\FilamentBlog\Resources\PostResource;
 
 return [
     'includes' => [
@@ -13,7 +14,7 @@ return [
         UserResource::class,
         QuestionResource::class,
         QuizResource::class,
-        // App\Filament\Resources\Blog\AuthorResource::class,
+        PostResource::class,
     ],
     'excludes' => [
         // App\Filament\Resources\Blog\AuthorResource::class,
