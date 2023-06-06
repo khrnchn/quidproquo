@@ -53,18 +53,11 @@ class QuizResource extends Resource
                         Forms\Components\TextInput::make('slug')
                             ->disabled()
                             ->required()
-                            ->unique(Brand::class, 'slug', ignoreRecord: true),
+                            ->unique(Quiz::class, 'slug', ignoreRecord: true),
 
                         Textarea::make('description')
-                            ->label(__('description'))
+                            ->label(__('Description'))
                             ->required(),
-
-                        Toggle::make('is_published')
-                            ->label(__('Published'))
-                            ->onIcon('heroicon-s-lightning-bolt')
-                            ->offIcon('heroicon-s-lightning-bolt')
-                            ->default(true)
-                            ->inline(false),
 
                         FileUpload::make('media_url')
                             ->disk('quiz')
@@ -77,6 +70,13 @@ class QuizResource extends Resource
                             ->imageCropAspectRatio('18:9')
                             ->imageResizeTargetWidth('720')
                             ->imageResizeTargetHeight('350'),
+
+                        Toggle::make('is_published')
+                            ->label(__('Published'))
+                            ->onIcon('heroicon-s-lightning-bolt')
+                            ->offIcon('heroicon-s-lightning-bolt')
+                            ->default(true)
+                            ->inline(false),
 
                     ])->columns(1),
             ]);

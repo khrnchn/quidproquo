@@ -48,7 +48,7 @@ class TopicResource extends Resource
                             Forms\Components\TextInput::make('slug')
                                 ->disabled()
                                 ->required()
-                                ->unique(Brand::class, 'slug', ignoreRecord: true),
+                                ->unique(ModelsTopic::class, 'slug', ignoreRecord: true),
 
                             Toggle::make('is_active')
                                 ->onIcon('heroicon-s-lightning-bolt')
