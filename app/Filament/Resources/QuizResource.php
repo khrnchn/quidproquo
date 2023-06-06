@@ -3,19 +3,13 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\QuizResource\Pages;
-use App\Filament\Resources\QuizResource\Pages\CreateQuiz;
-use App\Filament\Resources\QuizResource\RelationManagers;
-use App\Filament\Resources\QuizResource\RelationManagers\QuestionsRelationManager;
 use App\Filament\Resources\QuizResource\RelationManagers\TopicsRelationManager;
 use App\Filament\Resources\QuizResource\Widgets\QuizOverview;
-use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -31,6 +25,7 @@ use Harishdurga\LaravelQuiz\Models\Topicable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class QuizResource extends Resource
 {
@@ -50,20 +45,27 @@ class QuizResource extends Resource
             ->schema([
                 Section::make(__('General'))
                     ->schema([
-                        TextInput::make('name')
-                            ->label(__('name'))
-                            ->required(),
-                        TextInput::make('slug')
-                            ->required(),
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->lazy()
+                            ->afterStateUpdated(fn (string $context, $state, callable $set) => $context === 'create' ? $set('slug', Str::slug($state)) : null),
+
+                        Forms\Components\TextInput::make('slug')
+                            ->disabled()
+                            ->required()
+                            ->unique(Brand::class, 'slug', ignoreRecord: true),
+
                         Textarea::make('description')
                             ->label(__('description'))
                             ->required(),
+
                         Toggle::make('is_published')
                             ->label(__('Published'))
                             ->onIcon('heroicon-s-lightning-bolt')
                             ->offIcon('heroicon-s-lightning-bolt')
                             ->default(true)
                             ->inline(false),
+
                         FileUpload::make('media_url')
                             ->disk('quiz')
                             ->image()
@@ -75,6 +77,7 @@ class QuizResource extends Resource
                             ->imageCropAspectRatio('18:9')
                             ->imageResizeTargetWidth('720')
                             ->imageResizeTargetHeight('350'),
+
                     ])->columns(1),
             ]);
     }

@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TopicResource\Pages;
-use App\Filament\Resources\TopicResource\RelationManagers;
 use App\Filament\Resources\TopicResource\RelationManagers\QuestionsRelationManager;
 use App\Filament\Resources\TopicResource\Widgets\StatsOverview;
 use Filament\Forms;
@@ -14,12 +13,11 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
-use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\BooleanColumn;
 use Filament\Tables\Filters\Filter;
 use Harishdurga\LaravelQuiz\Models\Topic as ModelsTopic;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class TopicResource extends Resource
 {
@@ -42,9 +40,15 @@ class TopicResource extends Resource
                     Grid::make(3)
                         ->schema([
 
-                            Forms\Components\TextInput::make('name')->required(),
+                            Forms\Components\TextInput::make('name')
+                                ->required()
+                                ->lazy()
+                                ->afterStateUpdated(fn (string $context, $state, callable $set) => $context === 'create' ? $set('slug', Str::slug($state)) : null),
 
-                            Forms\Components\TextInput::make('slug')->required(),
+                            Forms\Components\TextInput::make('slug')
+                                ->disabled()
+                                ->required()
+                                ->unique(Brand::class, 'slug', ignoreRecord: true),
 
                             Toggle::make('is_active')
                                 ->onIcon('heroicon-s-lightning-bolt')

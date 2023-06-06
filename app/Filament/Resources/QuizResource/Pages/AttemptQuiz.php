@@ -58,7 +58,7 @@ class AttemptQuiz extends Page
         $this->questionId = $questionId;
 
         $question = Question::where('id', $questionId)->value('name');
-        $questionImage = Question::where('id', $questionId)->value('media_url');
+        $questionImage = Question::where('id', $questionId)->value('image_path');
 
         $quizId = Route::current()->parameter('record');
 
