@@ -49,6 +49,7 @@ class ApiController extends Controller
             $api = new Api;
             return $api->getAllSources();
         });
+        
         return $response;
     }
 }

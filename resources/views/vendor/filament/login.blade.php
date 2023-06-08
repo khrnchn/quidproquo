@@ -4,4 +4,6 @@
     <x-filament::button type="submit" form="authenticate" class="w-full">
         {{ __('filament::login.buttons.submit.label') }}
     </x-filament::button>
+
+    <x-filament-socialite::buttons />
 </form>

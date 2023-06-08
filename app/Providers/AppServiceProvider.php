@@ -27,9 +27,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+
         if ($this->app->environment('production') || $this->app->environment('staging')) {
             \URL::forceScheme('https');
         }
+
+        FilamentSocialiteFacade::setCreateUserCallback(fn (SocialiteUserContract $oauthUser, FilamentSocialite $socialite) => $socialite->getUserModelClass()::create([
+            'name' => $oauthUser->getName(),
+            'email' => $oauthUser->getEmail(),
+        ]));
 
         Filament::registerNavigationGroups([
             'Manage',
