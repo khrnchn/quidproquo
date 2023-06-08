@@ -55,6 +55,10 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
+    'news_api_url' => env('NEWS_API_URL', null),
+    'news_api_key' => env('NEWS_API_KEY', null),
+    'default_news_source' => env('DEFAULT_NEWS_SOURCE', 'CNN'),
+    'default_news_source_id' => env('DEFAULT_NEWS_SOURCE_ID', 'cnn'),
 
     'asset_url' => env('ASSET_URL'),
 
@@ -198,6 +202,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\FortifyServiceProvider::class,
         App\Providers\JetstreamServiceProvider::class,
+        App\Providers\RouteServiceProvider::class,
+        App\Providers\HelperServiceProvider::class,
 
     ],
 
@@ -213,7 +219,8 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        // 'ExampleClass' => App\Example\ExampleClass::class,
+        'View' => Illuminate\Support\Facades\View::class,
+        'Helper' => App\Helpers\Helper::class,
     ])->toArray(),
 
 ];

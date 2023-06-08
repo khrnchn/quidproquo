@@ -1,5 +1,6 @@
 <?php
 
+use App\Filament\Resources\NewsResource;
 use App\Filament\Resources\QuestionResource;
 use App\Filament\Resources\QuizResource;
 use App\Filament\Resources\Shield\RoleResource;

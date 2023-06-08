@@ -1,6 +1,7 @@
 <?php
 
 use App\Filament\Resources\QuizResource\Pages\AnswerQuiz;
+use App\Http\Controllers\ApiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\User\QuizController;
@@ -20,6 +21,9 @@ use App\Http\Controllers\User\TopicController;
 Route::get('/', function () {
     return redirect('qpq/login');
 });
+
+Route::get('/qpq/news-list', [ApiController::class,'displayNews']);
+Route::post('qpq/news-list/sourceId', [ApiController::class,'displayNews']);
 
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
