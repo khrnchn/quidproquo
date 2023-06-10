@@ -62,8 +62,7 @@ class QuestionResource extends Resource
                     ->onIcon('heroicon-s-lightning-bolt')
                     ->offIcon('heroicon-s-lightning-bolt')
                     ->inline(false),
-
-            ]);
+            ])->columns(1);
     }
 
     public static function table(Table $table): Table

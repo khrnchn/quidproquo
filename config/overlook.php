@@ -18,6 +18,6 @@ return [
         PostResource::class,
     ],
     'excludes' => [
-        // App\Filament\Resources\Blog\AuthorResource::class,
+        RoleResource::class,
     ],
 ];

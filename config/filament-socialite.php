@@ -16,6 +16,11 @@ return [
     'providers' => [
         'google' => [
             'label' => 'Google',
+            'icon' => 'fab-google'
+        ],
+        'facebook' => [
+            'label' => 'Facebook',
+            'icon' => 'fab-facebook'
         ],
     ],
 

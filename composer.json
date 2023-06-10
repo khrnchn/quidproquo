@@ -29,6 +29,7 @@
         "laravel/tinker": "^2.7",
         "laravel/vapor-core": "^2.31",
         "livewire/livewire": "^2.11",
+        "owenvoke/blade-fontawesome": "^2.3",
         "pxlrbt/filament-spotlight": "^0.3.7",
         "ralphjsmit/laravel-filament-components": "^1.2",
         "stephenjude/filament-blog": "^1.0"

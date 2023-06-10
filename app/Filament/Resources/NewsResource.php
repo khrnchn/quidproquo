@@ -84,4 +84,9 @@ class NewsResource extends Resource
             'list' => NewsList::route('/list'),
         ];
     }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
 }
