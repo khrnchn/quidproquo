@@ -25,7 +25,6 @@ class TopicResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
 
     protected static ?int $navigationSort = 2;
@@ -52,7 +51,7 @@ class TopicResource extends Resource
                     ->offIcon('heroicon-s-lightning-bolt')
                     ->inline(false),
 
-            ]);
+            ])->columns(1);
     }
 
     public static function table(Table $table): Table

@@ -13,7 +13,7 @@ class QuizOverview extends BaseWidget
         return [
             Card::make(__('Total quizzes'), Quiz::all()->count()),
             Card::make(__('Published quizzes'), Quiz::where('is_published', 1)->count()),
-            Card::make(__('Average time on quiz'), '3:12'),
+            Card::make(__('Inactive quizzes'), Quiz::where('is_published', 0)->count()),
         ];
     }
 }

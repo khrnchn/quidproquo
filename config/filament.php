@@ -25,7 +25,7 @@ return [
     |
     */
 
-    'path' => env('FILAMENT_PATH', 'qpq'),
+    'path' => env('FILAMENT_PATH', 'securify'),
 
     /*
     |--------------------------------------------------------------------------

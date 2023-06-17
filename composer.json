@@ -18,6 +18,7 @@
         "dutchcodingcompany/filament-socialite": "^0.2.5",
         "filament/filament": "^2.16",
         "filament/spatie-laravel-media-library-plugin": "^2.17",
+        "filament/spatie-laravel-tags-plugin": "^2.17",
         "flowframe/laravel-trend": "^0.1.5",
         "guzzlehttp/guzzle": "^7.7",
         "harishdurga/laravel-quiz": "^1.1",

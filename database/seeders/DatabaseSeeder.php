@@ -47,20 +47,8 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('password'),
             ]);
 
-        Artisan::call('shield:install', ['--fresh' => true]);
 
-        // here the permissions are still zero
-        $superadmin->assignRole("filament_user");
-        $permissions = $superadmin->getPermissionsViaRoles();
-        $superadmin->givePermissionTo($permissions);
-
-        $user->assignRole("filament_user");
-        $permissions = $user->getPermissionsViaRoles();
-        $user->givePermissionTo($permissions);
-
-        $supervisor->assignRole("filament_user");
-        $permissions = $supervisor->getPermissionsViaRoles();
-        $supervisor->givePermissionTo($permissions);
+        
 
         // $this->call(QuestionSeeder::class);
         // $this->call(TopicSeeder::class);

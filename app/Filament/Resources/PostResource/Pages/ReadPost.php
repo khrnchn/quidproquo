@@ -2,6 +2,7 @@
 
 namespace Stephenjude\FilamentBlog\Resources\PostResource\Pages;
 
+use App\Models\Article;
 use Filament\Resources\Pages\Page;
 use Stephenjude\FilamentBlog\Models\Post;
 use Stephenjude\FilamentBlog\Resources\PostResource;
@@ -16,7 +17,7 @@ class ReadPost extends Page
 
     public function mount($record)
     {
-        $post = Post::where('id', $record)->first();
+        $post = Article::where('id', $record)->first();
         $this->post = $post;
 
     }

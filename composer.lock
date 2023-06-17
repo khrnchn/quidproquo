@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7de8d40936269843b6951a43a356cbe4",
+    "content-hash": "502bcb6eff09369015b606ebddb2ba18",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -2086,7 +2086,7 @@
         },
         {
             "name": "filament/spatie-laravel-tags-plugin",
-            "version": "v2.17.47",
+            "version": "v2.17.48",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/spatie-laravel-tags-plugin.git",

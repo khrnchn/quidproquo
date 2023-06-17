@@ -19,11 +19,11 @@ use App\Http\Controllers\User\TopicController;
 */
 
 Route::get('/', function () {
-    return redirect('qpq/login');
+    return redirect('/securify/login');
 });
 
-Route::get('/qpq/news-list', [ApiController::class,'displayNews']);
-Route::post('qpq/news-list/sourceId', [ApiController::class,'displayNews']);
+Route::get('/securify/news-list', [ApiController::class,'displayNews']);
+Route::post('securify/news-list/sourceId', [ApiController::class,'displayNews']);
 
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
