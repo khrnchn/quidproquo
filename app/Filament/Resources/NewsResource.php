@@ -12,6 +12,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -68,7 +69,7 @@ class NewsResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\Action::make('read')
+                Action::make('read')
                     ->label('Read more')
                     ->icon('heroicon-s-external-link')
                     ->url(fn ($record) => $record->link)

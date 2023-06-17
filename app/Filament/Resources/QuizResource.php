@@ -10,12 +10,18 @@ use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\Layout\Panel;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Harishdurga\LaravelQuiz\Models\Quiz;
 use Harishdurga\LaravelQuiz\Models\QuizAttempt;
@@ -45,12 +51,12 @@ class QuizResource extends Resource
             ->schema([
                 Section::make(__('General'))
                     ->schema([
-                        Forms\Components\TextInput::make('name')
+                        TextInput::make('name')
                             ->required()
                             ->lazy()
                             ->afterStateUpdated(fn (string $context, $state, callable $set) => $context === 'create' ? $set('slug', Str::slug($state)) : null),
 
-                        Forms\Components\TextInput::make('slug')
+                        TextInput::make('slug')
                             ->disabled()
                             ->required()
                             ->unique(Quiz::class, 'slug', ignoreRecord: true),
@@ -86,7 +92,7 @@ class QuizResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('media_url')
+                ImageColumn::make('media_url')
                     ->width(330)
                     ->height(100)
                     ->square()
@@ -95,14 +101,14 @@ class QuizResource extends Resource
                         'title' => 'Quiz Image',
                     ]),
 
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label(__('name'))
                     ->sortable()
                     ->searchable()
                     ->weight('medium')
                     ->limit(50),
 
-                Tables\Columns\TextColumn::make('slug')
+                TextColumn::make('slug')
                     ->sortable()
                     ->searchable()
                     ->limit(50)
@@ -119,7 +125,7 @@ class QuizResource extends Resource
                     ),
 
                 // show how many topics of a quiz
-                Tables\Columns\TextColumn::make('topic_count')
+                TextColumn::make('topic_count')
                     ->getStateUsing(function ($record) {
                         $topics = Topicable::where([
                             'topicable_id' => $record->id,
@@ -131,7 +137,7 @@ class QuizResource extends Resource
                     ->icon('heroicon-o-academic-cap'),
 
                 // show how many questions of a quiz
-                Tables\Columns\TextColumn::make('question_count')
+                TextColumn::make('question_count')
                     ->getStateUsing(function ($record) {
                         $questions = QuizQuestion::where('quiz_id', $record->id)->count();
 
@@ -153,8 +159,8 @@ class QuizResource extends Resource
                         }
                     ),
 
-                Tables\Columns\Layout\Panel::make([
-                    Tables\Columns\TextColumn::make('description')
+                Panel::make([
+                    TextColumn::make('description')
                         ->size('sm'),
                 ])->collapsible(),
             ])
@@ -167,7 +173,7 @@ class QuizResource extends Resource
                 ],
             )
             ->actions([
-                Tables\Actions\EditAction::make(),
+                EditAction::make(),
 
                 // for first time attempting the quiz
                 Action::make('attemptQuiz')
@@ -274,7 +280,7 @@ class QuizResource extends Resource
 
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                DeleteBulkAction::make(),
             ])
             ->contentGrid([
                 'default' => 1,
