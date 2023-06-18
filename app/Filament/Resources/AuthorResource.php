@@ -14,7 +14,7 @@ use Filament\Tables;
 class AuthorResource extends Resource
 {
     use HasContentEditor;
-    
+
     protected static ?string $model = Author::class;
 
     protected static ?string $recordTitleAttribute = 'name';
@@ -37,9 +37,9 @@ class AuthorResource extends Resource
                             ->unique(Author::class, 'email', fn ($record) => $record),
                         Forms\Components\FileUpload::make('photo')
                             ->image()
-                            ->disk(config('filament-blog.avatar.disk', 'public'))
-                            ->maxSize(config('filament-blog.avatar.maxSize', 5120))
-                            ->directory(config('filament-blog.avatar.directory', 'blog'))
+                            ->disk('public')
+                            ->directory('blog')
+                            ->maxSize(10000)
                             ->columnSpan([
                                 'sm' => 2,
                             ]),

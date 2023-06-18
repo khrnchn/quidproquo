@@ -7,12 +7,18 @@ use Filament\Forms\Components\SpatieTagsInput;
 use App\Filament\Resources\ArticleResource\RelationManagers;
 use App\Models\Article;
 use App\Traits\HasContentEditor;
+use Carbon\Carbon;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\View;
+use Filament\Forms\Components\ViewField;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Builder;
 
 use function now;
 
@@ -24,7 +30,7 @@ class ArticleResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    protected static ?string $navigationGroup = 'Manage';
+    protected static ?string $navigationGroup = 'Resources';
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
@@ -54,32 +60,30 @@ class ArticleResource extends Resource
 
                         Forms\Components\FileUpload::make('banner')
                             ->image()
-                            ->maxSize(config('filament-blog.banner.maxSize', 5120))
-                            ->imageCropAspectRatio(config('filament-blog.banner.cropAspectRatio', '16:9'))
-                            ->disk(config('filament-blog.banner.disk', 'public'))
-                            ->directory(config('filament-blog.banner.directory', 'blog'))
+                            ->maxSize(10000)
+                            ->imageCropAspectRatio('16:9')
+                            ->disk('public')
+                            ->directory('blog')
                             ->columnSpan([
                                 'sm' => 2,
                             ]),
 
                         self::getContentEditor('content'),
 
-                        Forms\Components\BelongsToSelect::make('blog_author_id')
-                            ->label(__('filament-blog::filament-blog.author'))
+                        Forms\Components\BelongsToSelect::make('author_id')
                             ->relationship('author', 'name')
                             ->searchable()
                             ->required(),
 
-                        Forms\Components\BelongsToSelect::make('blog_category_id')
-                            ->label(__('filament-blog::filament-blog.category'))
+                        Forms\Components\BelongsToSelect::make('category_id')
                             ->relationship('category', 'name')
                             ->searchable()
                             ->required(),
 
                         Forms\Components\DatePicker::make('published_at')
-                            ->label(__('filament-blog::filament-blog.published_date')),
+                            ->default(Carbon::now()),
+
                         SpatieTagsInput::make('tags')
-                            ->label(__('filament-blog::filament-blog.tags'))
                             ->required(),
                     ])
                     ->columns([
@@ -89,12 +93,10 @@ class ArticleResource extends Resource
                 Forms\Components\Card::make()
                     ->schema([
                         Forms\Components\Placeholder::make('created_at')
-                            ->label(__('filament-blog::filament-blog.created_at'))
                             ->content(fn (
                                 ?Article $record
                             ): string => $record ? $record->created_at->diffForHumans() : '-'),
                         Forms\Components\Placeholder::make('updated_at')
-                            ->label(__('filament-blog::filament-blog.last_modified_at'))
                             ->content(fn (
                                 ?Article $record
                             ): string => $record ? $record->updated_at->diffForHumans() : '-'),
@@ -107,13 +109,44 @@ class ArticleResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\ImageColumn::make('banner')
+                    ->rounded(),
+                Tables\Columns\TextColumn::make('title')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('author.name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('category.name')
+                    ->searchable()
+                    ->sortable(),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('published_at')
+                    ->form([
+                        Forms\Components\DatePicker::make('published_from')
+                            ->placeholder(fn ($state): string => 'Dec 18, ' . now()->subYear()->format('Y')),
+                        Forms\Components\DatePicker::make('published_until')
+                            ->placeholder(fn ($state): string => now()->format('M d, Y')),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['published_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('published_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['published_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('published_at', '<=', $date),
+                            );
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Action::make('read')
+                    ->icon('heroicon-s-external-link')
+                    ->url(fn ($record) => ArticleResource::getUrl('read', $record->id))
+                    ->openUrlInNewTab(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -133,6 +166,12 @@ class ArticleResource extends Resource
             'index' => Pages\ListArticles::route('/'),
             'create' => Pages\CreateArticle::route('/create'),
             'edit' => Pages\EditArticle::route('/{record}/edit'),
+            'read' => Pages\ReadPost::route('/{record}/read'),
         ];
+    }
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }

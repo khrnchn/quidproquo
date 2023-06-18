@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Article;
+use App\Models\Video;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class PostPolicy
+class VideoPolicy
 {
     use HandlesAuthorization;
 
@@ -18,19 +18,19 @@ class PostPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->can('view_any_post');
+        return $user->can('view_any_video');
     }
 
     /**
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \Stephenjude\FilamentBlog\Models\Post  $post
+     * @param  \App\Models\Video  $video
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Post $post)
+    public function view(User $user, Video $video)
     {
-        return $user->can('view_post');
+        return $user->can('view_video');
     }
 
     /**
@@ -41,31 +41,31 @@ class PostPolicy
      */
     public function create(User $user)
     {
-        return $user->can('create_post');
+        return $user->can('create_video');
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \Stephenjude\FilamentBlog\Models\Post  $post
+     * @param  \App\Models\Video  $video
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Post $post)
+    public function update(User $user, Video $video)
     {
-        return $user->can('update_post');
+        return $user->can('update_video');
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \Stephenjude\FilamentBlog\Models\Post  $post
+     * @param  \App\Models\Video  $video
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Post $post)
+    public function delete(User $user, Video $video)
     {
-        return $user->can('delete_post');
+        return $user->can('delete_video');
     }
 
     /**
@@ -76,19 +76,19 @@ class PostPolicy
      */
     public function deleteAny(User $user)
     {
-        return $user->can('delete_any_post');
+        return $user->can('delete_any_video');
     }
 
     /**
      * Determine whether the user can permanently delete.
      *
      * @param  \App\Models\User  $user
-     * @param  \Stephenjude\FilamentBlog\Models\Post  $post
+     * @param  \App\Models\Video  $video
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Post $post)
+    public function forceDelete(User $user, Video $video)
     {
-        return $user->can('force_delete_post');
+        return $user->can('force_delete_video');
     }
 
     /**
@@ -99,19 +99,19 @@ class PostPolicy
      */
     public function forceDeleteAny(User $user)
     {
-        return $user->can('force_delete_any_post');
+        return $user->can('force_delete_any_video');
     }
 
     /**
      * Determine whether the user can restore.
      *
      * @param  \App\Models\User  $user
-     * @param  \Stephenjude\FilamentBlog\Models\Post  $post
+     * @param  \App\Models\Video  $video
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Post $post)
+    public function restore(User $user, Video $video)
     {
-        return $user->can('restore_post');
+        return $user->can('restore_video');
     }
 
     /**
@@ -122,19 +122,19 @@ class PostPolicy
      */
     public function restoreAny(User $user)
     {
-        return $user->can('restore_any_post');
+        return $user->can('restore_any_video');
     }
 
     /**
      * Determine whether the user can replicate.
      *
      * @param  \App\Models\User  $user
-     * @param  \Stephenjude\FilamentBlog\Models\Post  $post
+     * @param  \App\Models\Video  $video
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function replicate(User $user, Post $post)
+    public function replicate(User $user, Video $video)
     {
-        return $user->can('replicate_post');
+        return $user->can('replicate_video');
     }
 
     /**
@@ -145,7 +145,7 @@ class PostPolicy
      */
     public function reorder(User $user)
     {
-        return $user->can('reorder_post');
+        return $user->can('reorder_video');
     }
 
 }

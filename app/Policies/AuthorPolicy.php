@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Models\User;
-use Stephenjude\FilamentBlog\Models\Author;
+use App\Models\Author;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class AuthorPolicy
@@ -25,7 +25,7 @@ class AuthorPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \Stephenjude\FilamentBlog\Models\Author  $author
+     * @param  \App\Models\Author  $author
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function view(User $user, Author $author)
@@ -48,7 +48,7 @@ class AuthorPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \Stephenjude\FilamentBlog\Models\Author  $author
+     * @param  \App\Models\Author  $author
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function update(User $user, Author $author)
@@ -60,7 +60,7 @@ class AuthorPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \Stephenjude\FilamentBlog\Models\Author  $author
+     * @param  \App\Models\Author  $author
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function delete(User $user, Author $author)
@@ -83,7 +83,7 @@ class AuthorPolicy
      * Determine whether the user can permanently delete.
      *
      * @param  \App\Models\User  $user
-     * @param  \Stephenjude\FilamentBlog\Models\Author  $author
+     * @param  \App\Models\Author  $author
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function forceDelete(User $user, Author $author)
@@ -106,7 +106,7 @@ class AuthorPolicy
      * Determine whether the user can restore.
      *
      * @param  \App\Models\User  $user
-     * @param  \Stephenjude\FilamentBlog\Models\Author  $author
+     * @param  \App\Models\Author  $author
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function restore(User $user, Author $author)
@@ -129,7 +129,7 @@ class AuthorPolicy
      * Determine whether the user can replicate.
      *
      * @param  \App\Models\User  $user
-     * @param  \Stephenjude\FilamentBlog\Models\Author  $author
+     * @param  \App\Models\Author  $author
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function replicate(User $user, Author $author)

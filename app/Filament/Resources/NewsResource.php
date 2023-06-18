@@ -25,7 +25,7 @@ class NewsResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-newspaper';
     
-    protected static ?string $navigationGroup = 'Manage';
+    protected static ?string $navigationGroup = 'Resources';
 
     public static function form(Form $form): Form
     {
@@ -89,5 +89,10 @@ class NewsResource extends Resource
     public static function canCreate(): bool
     {
         return false;
+    }
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }

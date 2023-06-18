@@ -13,6 +13,7 @@
         "awcodes/overlook": "^1.0",
         "bezhansalleh/filament-language-switch": "^1.0",
         "bezhansalleh/filament-shield": "^2.4",
+        "buildix/timex": "^1.1",
         "calebporzio/sushi": "^2.4",
         "camya/filament-title-with-slug": "^0.5.4",
         "dutchcodingcompany/filament-socialite": "^0.2.5",
@@ -32,8 +33,7 @@
         "livewire/livewire": "^2.11",
         "owenvoke/blade-fontawesome": "^2.3",
         "pxlrbt/filament-spotlight": "^0.3.7",
-        "ralphjsmit/laravel-filament-components": "^1.2",
-        "stephenjude/filament-blog": "^1.0"
+        "ralphjsmit/laravel-filament-components": "^1.2"
     },
     "require-dev": {
         "beyondcode/laravel-er-diagram-generator": "^2.0",

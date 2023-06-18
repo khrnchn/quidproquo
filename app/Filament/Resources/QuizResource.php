@@ -41,7 +41,7 @@ class QuizResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
 
-    protected static ?string $navigationGroup = 'Manage';
+    protected static ?string $navigationGroup = 'Resources';
 
     protected static ?int $navigationSort = 4;
 
@@ -312,5 +312,10 @@ class QuizResource extends Resource
             'attempt' => Pages\AttemptQuiz::route('/{record}/attempt/{quizQuestion}'),
             'result' => Pages\ViewQuiz::route('/{record}/result'),
         ];
+    }
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }

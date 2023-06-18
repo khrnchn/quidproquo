@@ -13,11 +13,6 @@ class Author extends Model
     use HasFactory;
 
     /**
-     * @var string
-     */
-    protected $table = 'authors';
-
-    /**
      * @var array<int, string>
      */
     protected $fillable = [
