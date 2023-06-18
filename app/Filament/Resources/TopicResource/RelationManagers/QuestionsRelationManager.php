@@ -4,17 +4,14 @@ namespace App\Filament\Resources\TopicResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Table;
 use Filament\Tables;
-use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\BooleanColumn;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class QuestionsRelationManager extends RelationManager
 {
@@ -29,9 +26,9 @@ class QuestionsRelationManager extends RelationManager
                 Fieldset::make('question')
                     ->label('Question Details')
                     ->schema([
-                        Forms\Components\TextArea::make('name')
+                        Textarea::make('name')
                             ->required(),
-                        Forms\Components\FileUpload::make('media_url')
+                        FileUpload::make('media_url')
                             ->disk('question')
                             ->image()
                             // 12 mb
