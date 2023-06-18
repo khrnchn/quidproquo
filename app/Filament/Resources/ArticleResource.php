@@ -8,10 +8,13 @@ use App\Filament\Resources\ArticleResource\RelationManagers;
 use App\Models\Article;
 use App\Traits\HasContentEditor;
 use Carbon\Carbon;
-use Filament\Forms;
+use Filament\Forms\Components\BelongsToSelect;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\View;
-use Filament\Forms\Components\ViewField;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -38,19 +41,19 @@ class ArticleResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Card::make()
+                Card::make()
                     ->schema([
-                        Forms\Components\TextInput::make('title')
+                        TextInput::make('title')
                             ->required()
                             ->reactive()
                             ->afterStateUpdated(fn ($state, callable $set) => $set('slug', Str::slug($state))),
 
-                        Forms\Components\TextInput::make('slug')
+                        TextInput::make('slug')
                             ->disabled()
                             ->required()
                             ->unique(Article::class, 'slug', fn ($record) => $record),
 
-                        Forms\Components\Textarea::make('excerpt')
+                        Textarea::make('excerpt')
                             ->rows(2)
                             ->minLength(50)
                             ->maxLength(1000)
@@ -58,7 +61,7 @@ class ArticleResource extends Resource
                                 'sm' => 2,
                             ]),
 
-                        Forms\Components\FileUpload::make('banner')
+                        FileUpload::make('banner')
                             ->image()
                             ->maxSize(10000)
                             ->imageCropAspectRatio('16:9')
@@ -70,17 +73,17 @@ class ArticleResource extends Resource
 
                         self::getContentEditor('content'),
 
-                        Forms\Components\BelongsToSelect::make('author_id')
+                        BelongsToSelect::make('author_id')
                             ->relationship('author', 'name')
                             ->searchable()
                             ->required(),
 
-                        Forms\Components\BelongsToSelect::make('category_id')
+                        BelongsToSelect::make('category_id')
                             ->relationship('category', 'name')
                             ->searchable()
                             ->required(),
 
-                        Forms\Components\DatePicker::make('published_at')
+                        DatePicker::make('published_at')
                             ->default(Carbon::now()),
 
                         SpatieTagsInput::make('tags')
@@ -90,13 +93,13 @@ class ArticleResource extends Resource
                         'sm' => 2,
                     ])
                     ->columnSpan(2),
-                Forms\Components\Card::make()
+                Card::make()
                     ->schema([
-                        Forms\Components\Placeholder::make('created_at')
+                        Placeholder::make('created_at')
                             ->content(fn (
                                 ?Article $record
                             ): string => $record ? $record->created_at->diffForHumans() : '-'),
-                        Forms\Components\Placeholder::make('updated_at')
+                        Placeholder::make('updated_at')
                             ->content(fn (
                                 ?Article $record
                             ): string => $record ? $record->updated_at->diffForHumans() : '-'),
@@ -124,9 +127,9 @@ class ArticleResource extends Resource
             ->filters([
                 Tables\Filters\Filter::make('published_at')
                     ->form([
-                        Forms\Components\DatePicker::make('published_from')
+                        DatePicker::make('published_from')
                             ->placeholder(fn ($state): string => 'Dec 18, ' . now()->subYear()->format('Y')),
-                        Forms\Components\DatePicker::make('published_until')
+                        DatePicker::make('published_until')
                             ->placeholder(fn ($state): string => now()->format('M d, Y')),
                     ])
                     ->query(function (Builder $query, array $data): Builder {

@@ -3,14 +3,13 @@
 namespace App\Filament\Resources\QuestionResource\RelationManagers;
 
 use Filament\Forms;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\BooleanColumn;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class OptionsRelationManager extends RelationManager
 {
@@ -22,12 +21,12 @@ class OptionsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextArea::make('name')
+                TextArea::make('name')
                     ->required()
                     ->maxLength(255)
                     ->label('Option'),
 
-                Forms\Components\TextArea::make('explanation')
+                Textarea::make('explanation')
                     ->required()
                     ->maxLength(255)
                     ->label('Explanation'),
