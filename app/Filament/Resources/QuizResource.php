@@ -31,6 +31,7 @@ use Harishdurga\LaravelQuiz\Models\Topicable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class QuizResource extends Resource
@@ -127,10 +128,10 @@ class QuizResource extends Resource
                 // show how many topics of a quiz
                 TextColumn::make('topic_count')
                     ->getStateUsing(function ($record) {
-                        $topics = Topicable::where([
-                            'topicable_id' => $record->id,
-                            'topicable_type' => 'Harishdurga\LaravelQuiz\Models\Quiz',
-                        ])->count();
+                        $topics = DB::table('topicables')
+                            ->where('topicable_id', $record->id)
+                            ->where('topicable_type', 'Harishdurga\LaravelQuiz\Models\Quiz')
+                            ->count();
 
                         return $topics . ' topics';
                     })

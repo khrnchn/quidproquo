@@ -10,6 +10,7 @@ use Harishdurga\LaravelQuiz\Models\Quiz;
 use Harishdurga\LaravelQuiz\Models\QuizQuestion;
 use Harishdurga\LaravelQuiz\Models\Topicable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class CreateQuiz extends CreateRecord
 {
@@ -22,10 +23,9 @@ class CreateQuiz extends CreateRecord
         // save all the general questions that does not belong to any topics into QuizQuestion
 
         // 1. get all questions from Topicable
-        $questionsWithTopic = Topicable::where(
-            'topicable_type',
-            'Harishdurga\LaravelQuiz\Models\Question',
-        )->pluck('topicable_id');
+        $questionsWithTopic = DB::table('topicables')
+            ->where('topicable_type', 'Harishdurga\LaravelQuiz\Models\Question')
+            ->pluck('topicable_id');
 
         // 2. get all questions
         $allQuestions = Question::get();

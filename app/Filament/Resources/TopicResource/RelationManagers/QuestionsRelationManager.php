@@ -31,7 +31,7 @@ class QuestionsRelationManager extends RelationManager
                     ->schema([
                         Forms\Components\TextArea::make('name')
                             ->required(),
-                        Forms\Components\FileUpload::make('image_path')
+                        Forms\Components\FileUpload::make('media_url')
                             ->disk('question')
                             ->image()
                             // 12 mb

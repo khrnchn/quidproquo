@@ -14,6 +14,7 @@ use Harishdurga\LaravelQuiz\Models\Topicable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\DB;
 
 class TopicsRelationManager extends RelationManager
 {
@@ -40,10 +41,11 @@ class TopicsRelationManager extends RelationManager
                     ->label('No. of Questions')
                     ->getStateUsing(function ($record) {
                         // count number of questions belongs to the topic
-                        $questions = Topicable::where([
-                            ['topic_id', $record->id],
-                            ['topicable_type', 'Harishdurga\LaravelQuiz\Models\Question'],
-                        ])->count();
+                        $questions = DB::table('topicables')
+                            ->where('topic_id', $record->id)
+                            ->where('topicable_type', 'Harishdurga\LaravelQuiz\Models\Question')
+                            ->count();
+
 
                         return $questions;
                     }),
@@ -59,10 +61,11 @@ class TopicsRelationManager extends RelationManager
                             // save all the questions of the attached topic into QuizQuestion
 
                             // 1. get all the questions of the topic, from Topicable
-                            $questionIds = Topicable::where([
-                                ['topic_id', $data],
-                                ['topicable_type', 'Harishdurga\LaravelQuiz\Models\Question'],
-                            ])->pluck('topicable_id');
+                            $questionIds = DB::table('topicables')
+                                ->where('topic_id', $data)
+                                ->where('topicable_type', 'Harishdurga\LaravelQuiz\Models\Question')
+                                ->pluck('topicable_id');
+
 
                             // 2. insert quizId and questionId into QuizQuestion
                             foreach ($questionIds as $questionId) {
@@ -80,10 +83,10 @@ class TopicsRelationManager extends RelationManager
                     ->before(
                         function (RelationManager $livewire, $record) {
 
-                            $questionIds = Topicable::where([
-                                ['topic_id', $record->id],
-                                ['topicable_type', 'Harishdurga\LaravelQuiz\Models\Question'],
-                            ])->pluck('topicable_id');
+                            $questionIds = DB::table('topicables')
+                                ->where('topic_id', $record->id)
+                                ->where('topicable_type', 'Harishdurga\LaravelQuiz\Models\Question')
+                                ->pluck('topicable_id');
 
                             foreach ($questionIds as $questionId) {
                                 QuizQuestion::where([

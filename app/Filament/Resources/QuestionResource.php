@@ -42,12 +42,12 @@ class QuestionResource extends Resource
     {
         return $form
             ->schema([
-                
+
                 Textarea::make('name')
                     ->required()
                     ->label('Question'),
 
-                FileUpload::make('image_path')
+                FileUpload::make('media_url')
                     ->disk('question')
                     ->image()
                     // 12 mb
