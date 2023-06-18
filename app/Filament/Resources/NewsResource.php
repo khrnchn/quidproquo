@@ -24,7 +24,7 @@ class NewsResource extends Resource
     protected static ?string $model = News::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-newspaper';
-    
+
     protected static ?string $navigationGroup = 'Resources';
 
     public static function form(Form $form): Form
@@ -39,6 +39,16 @@ class NewsResource extends Resource
     {
         return $table
             ->columns([
+                ImageColumn::make('image_url')
+                    ->getStateUsing(function ($record) {
+                        if ($record->image_url == null) {
+                            $record->image_url = 'https://cheapsslsecurity.com/blog/wp-content/uploads/2022/05/social-engineering-attacks-1.jpg';
+                        }
+
+                        return $record->image_url;
+                    })
+                    ->width(360)
+                    ->height(220),
 
                 TextColumn::make('title')
                     ->searchable()

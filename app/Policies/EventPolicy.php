@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\Models\User;
-use Stephenjude\FilamentBlog\Models\Post;
+use Buildix\Timex\Models\Event;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class PostPolicy
+class EventPolicy
 {
     use HandlesAuthorization;
 
@@ -18,19 +18,19 @@ class PostPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->can('view_any_post');
+        return $user->can('view_any_event');
     }
 
     /**
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \Stephenjude\FilamentBlog\Models\Post  $post
+     * @param  \Buildix\Timex\Models\Event  $event
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Post $post)
+    public function view(User $user, Event $event)
     {
-        return $user->can('view_post');
+        return $user->can('view_event');
     }
 
     /**
@@ -41,31 +41,31 @@ class PostPolicy
      */
     public function create(User $user)
     {
-        return $user->can('create_post');
+        return $user->can('create_event');
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \Stephenjude\FilamentBlog\Models\Post  $post
+     * @param  \Buildix\Timex\Models\Event  $event
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Post $post)
+    public function update(User $user, Event $event)
     {
-        return $user->can('update_post');
+        return $user->can('update_event');
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \Stephenjude\FilamentBlog\Models\Post  $post
+     * @param  \Buildix\Timex\Models\Event  $event
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Post $post)
+    public function delete(User $user, Event $event)
     {
-        return $user->can('delete_post');
+        return $user->can('delete_event');
     }
 
     /**
@@ -76,19 +76,19 @@ class PostPolicy
      */
     public function deleteAny(User $user)
     {
-        return $user->can('delete_any_post');
+        return $user->can('delete_any_event');
     }
 
     /**
      * Determine whether the user can permanently delete.
      *
      * @param  \App\Models\User  $user
-     * @param  \Stephenjude\FilamentBlog\Models\Post  $post
+     * @param  \Buildix\Timex\Models\Event  $event
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Post $post)
+    public function forceDelete(User $user, Event $event)
     {
-        return $user->can('force_delete_post');
+        return $user->can('force_delete_event');
     }
 
     /**
@@ -99,19 +99,19 @@ class PostPolicy
      */
     public function forceDeleteAny(User $user)
     {
-        return $user->can('force_delete_any_post');
+        return $user->can('force_delete_any_event');
     }
 
     /**
      * Determine whether the user can restore.
      *
      * @param  \App\Models\User  $user
-     * @param  \Stephenjude\FilamentBlog\Models\Post  $post
+     * @param  \Buildix\Timex\Models\Event  $event
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Post $post)
+    public function restore(User $user, Event $event)
     {
-        return $user->can('restore_post');
+        return $user->can('restore_event');
     }
 
     /**
@@ -122,19 +122,19 @@ class PostPolicy
      */
     public function restoreAny(User $user)
     {
-        return $user->can('restore_any_post');
+        return $user->can('restore_any_event');
     }
 
     /**
      * Determine whether the user can replicate.
      *
      * @param  \App\Models\User  $user
-     * @param  \Stephenjude\FilamentBlog\Models\Post  $post
+     * @param  \Buildix\Timex\Models\Event  $event
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function replicate(User $user, Post $post)
+    public function replicate(User $user, Event $event)
     {
-        return $user->can('replicate_post');
+        return $user->can('replicate_event');
     }
 
     /**
@@ -145,7 +145,7 @@ class PostPolicy
      */
     public function reorder(User $user)
     {
-        return $user->can('reorder_post');
+        return $user->can('reorder_event');
     }
 
 }

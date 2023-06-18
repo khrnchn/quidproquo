@@ -2,34 +2,27 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Article;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Card;
+use Harishdurga\LaravelQuiz\Models\Question;
 use Harishdurga\LaravelQuiz\Models\Quiz;
 use Harishdurga\LaravelQuiz\Models\QuizAttemptAnswer;
 use Harishdurga\LaravelQuiz\Models\QuizQuestion;
+use Harishdurga\LaravelQuiz\Models\Topic;
 
 class QuizOverview extends BaseWidget
 {
     protected function getCards(): array
     {
         return [
-            Card::make('Active quizzes', Quiz::where('is_published', true)->count())
-                ->description(QuizQuestion::all()->count() . ' questions')
+            Card::make('Total quizzes', Quiz::where('is_published', true)->count())
+                ->description(Topic::all()->count() . ' topics')
                 ->descriptionIcon('heroicon-s-trending-up'),
 
-            Card::make('Questions answered', QuizAttemptAnswer::whereNotNull('question_option_id')->count())
-                ->description('out of ' . QuizQuestion::all()->count() . ' questions'),
+            Card::make('Total questions', Question::all()->count()),
 
-            Card::make('Last answered on ', function () {
-                $latestAnswer = QuizAttemptAnswer::latest('created_at')->value('created_at');
-
-                if ($latestAnswer) {
-                    $formattedDate = $latestAnswer->format('j F Y');
-                    $message = Card::make('Last answered on ', $formattedDate);
-                } else {
-                    $message = Card::make('Last answered on ', 'n/a');
-                }
-            })
+            Card::make('Published Articles ', Article::all()->count()),
 
         ];
     }

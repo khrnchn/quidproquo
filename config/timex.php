@@ -83,8 +83,8 @@ return [
                 'format' => 'dddd, D MMM',
             ],
             'title' => [
-              'static' => false,
-              'format' => 'dddd, D MMM',
+                'static' => false,
+                'format' => 'dddd, D MMM',
             ],
         ],
         'buttons' => [
@@ -182,8 +182,8 @@ return [
     */
 
     'categories' => [
-            'isModelEnabled' => false,
-    /*
+        'isModelEnabled' => false,
+        /*
     |--------------------------------------------------------------------------
     | Category Model
     |--------------------------------------------------------------------------
@@ -193,36 +193,36 @@ return [
     |
     |
     */
-            'model' => [
-                'class' => \Buildix\Timex\Models\Category::class, // \App\Models\Category::class
-                'key' => 'id', // "id" is a DB column - you can change by any primary key
-                'value' => 'value', // "value" is a DB column - it used for Select options and displays on Resource page
-                'icon' => 'icon', // "icon" is a DB column - define here any heroicon- icon
-                'color' => 'color', // "color" is a DB column - default tailwindcss colors names like: primary / secondary / danger
-            ],
+        'model' => [
+            'class' => \Buildix\Timex\Models\Category::class, // \App\Models\Category::class
+            'key' => 'id', // "id" is a DB column - you can change by any primary key
+            'value' => 'value', // "value" is a DB column - it used for Select options and displays on Resource page
+            'icon' => 'icon', // "icon" is a DB column - define here any heroicon- icon
+            'color' => 'color', // "color" is a DB column - default tailwindcss colors names like: primary / secondary / danger
+        ],
         /*
         |--------------------------------------------------------------------------
         | Default TiMEX Categories
         |--------------------------------------------------------------------------
         */
-            'labels' => [
-                'primary' => 'Primary category',
-                'secondary' => 'Secondary category',
-                'danger' => 'Danger category',
-                'success' => 'Success category',
-            ],
-            'icons' => [
-                'primary' => 'heroicon-o-clipboard',
-                'secondary' => 'heroicon-o-bookmark',
-                'danger' => 'heroicon-o-flag',
-                'success' => 'heroicon-o-badge-check',
-            ],
-            'colors' => [
-                'primary' => 'primary',
-                'secondary' => 'secondary',
-                'danger' => 'danger',
-                'success' => 'success',
-            ],
+        'labels' => [
+            'primary' => 'Primary category',
+            'secondary' => 'Secondary category',
+            'danger' => 'Danger category',
+            'success' => 'Success category',
+        ],
+        'icons' => [
+            'primary' => 'heroicon-o-clipboard',
+            'secondary' => 'heroicon-o-bookmark',
+            'danger' => 'heroicon-o-flag',
+            'success' => 'heroicon-o-badge-check',
+        ],
+        'colors' => [
+            'primary' => 'primary',
+            'secondary' => 'secondary',
+            'danger' => 'danger',
+            'success' => 'success',
+        ],
     ],
 
 ];

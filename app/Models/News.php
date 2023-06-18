@@ -24,35 +24,27 @@ class News extends Model
         //API
         $news = Http::get('https://newsdata.io/api/1/news?apikey=' . config('app.news_api_key') . '&q=online%20scam&country=id,my,sg,gb')->json();
 
-        if (!$news) {
-            $news = Arr::map($news['results'], function ($item) {
+        $news = Arr::map($news['results'], function ($item) {
 
-                if ($item['creator'] == null || $item['creator'][0] == '') {
-                    $item['creator'] = 'n/a';
-                } else {
-                    $item['creator'] = $item['creator'][0];
-                }
+            if ($item['creator'] == null || $item['creator'][0] == '') {
+                $item['creator'] = 'n/a';
+            } else {
+                $item['creator'] = $item['creator'][0];
+            }
 
-                return Arr::only(
-                    $item,
-                    [
-                        'creator',
-                        'title',
-                        'description',
-                        'link',
-                        'image_url',
-                        'pubDate',
-                    ]
-                );
-            });
+            return Arr::only(
+                $item,
+                [
+                    'creator',
+                    'title',
+                    'description',
+                    'link',
+                    'image_url',
+                    'pubDate',
+                ]
+            );
+        });
 
-            return $news;
-        } else {
-            $news = [
-                
-            ];
-
-            return $news;
-        }
+        return $news;
     }
 }
